@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BKCordServer.Modules.Identity.Domain\BKCordServer.Modules.Identity.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
