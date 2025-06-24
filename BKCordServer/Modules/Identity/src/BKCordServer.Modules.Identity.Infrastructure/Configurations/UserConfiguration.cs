@@ -13,9 +13,9 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         //IdentityUser zaten tanımlıyor
         //builder.HasKey(u => u.Id);
 
-        builder.Property(u => u.Name).HasMaxLength(100);
-        builder.Property(u => u.Middlename).HasMaxLength(100);
-        builder.Property(u => u.Surname).HasMaxLength(100);
+        builder.Property(u => u.Name).HasMaxLength(100).IsRequired(false);
+        builder.Property(u => u.Middlename).HasMaxLength(100).IsRequired(false);
+        builder.Property(u => u.Surname).HasMaxLength(100).IsRequired(false);
         builder.Property(u => u.AvatarUrl).HasMaxLength(250);
 
         builder.Property(u => u.IsPrivateAccount).HasDefaultValue(false);

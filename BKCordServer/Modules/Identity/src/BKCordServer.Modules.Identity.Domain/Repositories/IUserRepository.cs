@@ -4,7 +4,7 @@ namespace BKCordServer.Modules.Identity.Domain.Repositories;
 
 public interface IUserRepository
 {
-    Task AddAsync(User user);
+    Task AddAsync(User user, string password);
     Task UpdateAsync(User user);
     Task DeleteAsync(User user);
     Task<User?> GetByIdAsync(string id);

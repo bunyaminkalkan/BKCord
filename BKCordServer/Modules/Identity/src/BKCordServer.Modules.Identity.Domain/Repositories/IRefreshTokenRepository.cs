@@ -1,7 +1,8 @@
 ﻿using BKCordServer.Modules.Identity.Domain.Entities;
 
 namespace BKCordServer.Modules.Identity.Domain.Repositories;
-internal interface IRefreshTokenRepository
+
+public interface IRefreshTokenRepository
 {
     Task AddAsync(RefreshToken refreshToken);
     Task UpdateAsync(RefreshToken refreshToken);
