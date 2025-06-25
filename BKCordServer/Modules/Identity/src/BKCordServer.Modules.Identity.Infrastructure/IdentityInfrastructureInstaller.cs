@@ -8,15 +8,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Kernel.DependencyInjection;
 
 namespace BKCordServer.Modules.Identity.Infrastructure;
-public static class DependencyInjection
+public class IdentityInfrastructureInstaller : IServiceInstaller
 {
     private const string SectionName = "PostgreSQL";
 
-    public static IServiceCollection AddIdentityDI(this IServiceCollection services, IConfiguration configuration)
+    public void Install(IServiceCollection services, IConfiguration configuration)
     {
-
         services.AddDbContext<AppIdentityDbContext>(options =>
         options.UseNpgsql(configuration.GetConnectionString(SectionName)));
 
@@ -35,7 +35,5 @@ public static class DependencyInjection
         services.AddScoped<ILookupNormalizer, UpperInvariantLookupNormalizer>();
         services.AddScoped<IUserValidator<User>, UserValidator<User>>();
         services.AddScoped<IPasswordValidator<User>, PasswordValidator<User>>();
-
-        return services;
     }
 }

@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Shared\Shared.Kernel\Shared.Kernel.csproj" />
     <ProjectReference Include="..\BKCordServer.Modules.Identity.Application\BKCordServer.Modules.Identity.Application.csproj" />
     <ProjectReference Include="..\BKCordServer.Modules.Identity.Domain\BKCordServer.Modules.Identity.Domain.csproj" />
   </ItemGroup>

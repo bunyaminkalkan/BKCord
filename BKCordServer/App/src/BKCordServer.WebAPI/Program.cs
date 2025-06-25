@@ -1,4 +1,3 @@
-using BKCordServer.Modules.Identity.Infrastructure;
 using BKCordServer.WebAPI.Extensions;
 using Scalar.AspNetCore;
 
@@ -10,7 +9,7 @@ builder.Services.AddModularControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddIdentityDI(builder.Configuration);
+builder.Services.InstallServices(builder.Configuration);
 
 var app = builder.Build();
 

@@ -1,5 +1,5 @@
-﻿using BKCordServer.Modules.Identity.Application.DTOs;
-using BKCordServer.Modules.Identity.Application.Services;
+﻿using BKCordServer.Modules.Identity.Application.Services;
+using BKCordServer.Modules.Identity.Domain.Entities;
 using BKCordServer.Modules.Identity.Domain.Repositories;
 
 namespace BKCordServer.Modules.Identity.Infrastructure.Persistance.Services;
@@ -12,18 +12,13 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<UserDto> GetByEmailAsync(string email)
+    public async Task<User> GetByEmailAsync(string email)
     {
         var user = await _userRepository.GetByEmailAsync(email);
 
         if (user == null)
             throw new Exception("user not found");
 
-        return new UserDto
-        {
-            Id = user.Id,
-            Email = user.Email,
-            UserName = user.UserName
-        };
+        return user;
     }
 }
