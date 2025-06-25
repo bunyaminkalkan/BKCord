@@ -1,4 +1,5 @@
-﻿using Shared.Kernel.DependencyInjection;
+﻿using BKCordServer.WebAPI.Middlewares;
+using Shared.Kernel.DependencyInjection;
 using System.Reflection;
 
 namespace BKCordServer.WebAPI.Extensions;
@@ -19,6 +20,9 @@ public static class ServiceInstallerExtensions
         {
             installer.Install(services, configuration);
         }
+
+        //webapi
+        services.AddScoped<ExceptionMiddleware>();
 
         return services;
     }

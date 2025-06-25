@@ -16,8 +16,9 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("getByEmail/{email}")]
-    public async Task<IActionResult> GetByEmailAsync([FromRoute] GetByEmailQuery request)
+    public async Task<IActionResult> GetByEmailAsync([FromRoute] string email)
     {
+        var request = new GetByEmailQuery(email);
         var response = await _mediator.Send(request);
         return Ok(response);
     }

@@ -1,6 +1,7 @@
 ﻿using BKCordServer.Modules.Identity.Application.Services;
 using BKCordServer.Modules.Identity.Domain.Entities;
 using BKCordServer.Modules.Identity.Domain.Repositories;
+using Shared.Kernel.Exceptions;
 
 namespace BKCordServer.Modules.Identity.Infrastructure.Persistance.Services;
 public class UserService : IUserService
@@ -17,7 +18,7 @@ public class UserService : IUserService
         var user = await _userRepository.GetByEmailAsync(email);
 
         if (user == null)
-            throw new Exception("user not found");
+            throw new NotFoundException("user not found");
 
         return user;
     }

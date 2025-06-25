@@ -20,6 +20,8 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.UseExceptionMiddleware();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
