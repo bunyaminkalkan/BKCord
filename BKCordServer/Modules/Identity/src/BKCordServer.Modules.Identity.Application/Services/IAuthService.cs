@@ -1,5 +1,7 @@
-﻿namespace BKCordServer.Modules.Identity.Application.Services;
+﻿using BKCordServer.Modules.Identity.Application.Features.Commands.Register;
+
+namespace BKCordServer.Modules.Identity.Application.Services;
 public interface IAuthService
 {
-    Task RegisterAsync(string email, string userName, string password);
+    Task RegisterAsync(RegisterCommand request);
 }

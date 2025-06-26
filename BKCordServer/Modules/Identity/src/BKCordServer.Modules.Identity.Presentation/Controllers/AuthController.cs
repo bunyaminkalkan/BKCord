@@ -1,4 +1,4 @@
-﻿using BKCordServer.Modules.Identity.Application.DTOs;
+﻿using BKCordServer.Modules.Identity.Application.Features.Commands.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterDto request)
+    public async Task<IActionResult> Register([FromBody] RegisterCommand request)
     {
         await _mediator.Send(request);
         return Ok();

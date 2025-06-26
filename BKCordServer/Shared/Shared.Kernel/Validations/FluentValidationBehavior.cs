@@ -4,8 +4,8 @@ using MediatR;
 namespace Shared.Kernel.Validations;
 
 public class FluentValidationBehavior<TRequest, TResponse> :
-  IPipelineBehavior<TRequest, TResponse>
-  where TRequest : IRequest<TResponse>
+    IPipelineBehavior<TRequest, TResponse>
+    where TRequest : notnull
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -14,7 +14,8 @@ public class FluentValidationBehavior<TRequest, TResponse> :
         _validators = validators;
     }
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request,
+        RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         if (!_validators.Any())
         {

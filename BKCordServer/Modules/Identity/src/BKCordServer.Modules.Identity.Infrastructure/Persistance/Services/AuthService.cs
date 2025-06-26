@@ -1,7 +1,9 @@
-﻿using BKCordServer.Modules.Identity.Application.Services;
+﻿using BKCordServer.Modules.Identity.Application.Features.Commands.Register;
+using BKCordServer.Modules.Identity.Application.Services;
 using BKCordServer.Modules.Identity.Domain.Entities;
 using BKCordServer.Modules.Identity.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
+using Shared.Kernel.Exceptions;
 
 namespace BKCordServer.Modules.Identity.Infrastructure.Persistance.Services;
 public class AuthService : IAuthService
@@ -13,15 +15,18 @@ public class AuthService : IAuthService
         _userManager = userManager;
     }
 
-    public async Task RegisterAsync(string email, string userName, string password)
+    public async Task RegisterAsync(RegisterCommand request)
     {
         var now = DateTime.UtcNow;
 
         var user = new User
         {
             Id = Guid.NewGuid().ToString(),
-            UserName = userName,
-            Email = email,
+            UserName = request.UserName,
+            Email = request.Email,
+            Name = request.Name,
+            Middlename = request.Middlename,
+            Surname = request.Surname,
             AvatarUrl = "",
             Status = UserStatus.Active,
             IsPrivateAccount = false,
@@ -31,12 +36,12 @@ public class AuthService : IAuthService
             DeletedAt = now,
         };
 
-        var result = await _userManager.CreateAsync(user, password);
+        var result = await _userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            throw new Exception($"Kayıt başarısız: {errors}");
+            throw new BadRequestException($"Register failed: {errors}");
         }
     }
 }

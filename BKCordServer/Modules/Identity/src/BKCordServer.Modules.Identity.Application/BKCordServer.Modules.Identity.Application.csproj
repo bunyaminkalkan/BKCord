@@ -17,8 +17,4 @@
     <ProjectReference Include="..\BKCordServer.Modules.Identity.Domain\BKCordServer.Modules.Identity.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Commands\" />
-  </ItemGroup>
-
 </Project>
