@@ -1,4 +1,5 @@
 ﻿using BKCordServer.WebAPI.Middlewares;
+using FluentValidation;
 using Shared.Kernel.DependencyInjection;
 using System.Reflection;
 

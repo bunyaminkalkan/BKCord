@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Shared.Kernel.Exceptions;
 using System.Net.Mime;
 using System.Text.Json;
 
@@ -19,11 +21,29 @@ public class ExceptionMiddleware : IMiddleware
         {
             await next(context);
         }
+        catch (ValidationException exception)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Type = "ValidationFailure",
+                Title = "Validation error",
+                Status = StatusCodes.Status400BadRequest,
+                Detail = "One or more validation errors has occurred"
+            };
+
+            if (exception.Errors is not null)
+            {
+                problemDetails.Extensions["errors"] = exception.Errors;
+            }
+
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+            await context.Response.WriteAsJsonAsync(problemDetails);
+        }
         catch (Exception ex)
         {
             await HandleExceptionAsync(context, ex);
         }
-
     }
 
     private Task HandleExceptionAsync(HttpContext context, Exception ex)
