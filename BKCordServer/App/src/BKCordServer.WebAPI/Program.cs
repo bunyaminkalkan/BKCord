@@ -9,7 +9,7 @@ builder.Services.AddModularControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.InstallServices(builder.Configuration);
+builder.Services.InstallModules(builder.Configuration);
 
 var app = builder.Build();
 

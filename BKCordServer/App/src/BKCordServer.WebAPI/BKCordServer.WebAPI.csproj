@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\..\..\Modules\Identity\src\BKCordServer.Modules.Identity.Infrastructure\BKCordServer.Modules.Identity.Infrastructure.csproj" />
-	<ProjectReference Include="..\..\..\Modules\Identity\src\BKCordServer.Modules.Identity.Presentation\BKCordServer.Modules.Identity.Presentation.csproj" />
+	<ProjectReference Include="..\..\..\Modules\Identity\BKCordServer.Identity\BKCordServer.Identity.csproj" />
   </ItemGroup>
 
 </Project>

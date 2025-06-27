@@ -1,4 +1,6 @@
-﻿namespace BKCordServer.WebAPI.Extensions;
+﻿using BKCordServer.Identity;
+
+namespace BKCordServer.WebAPI.Extensions;
 
 public static class ControllerExtensions
 {
@@ -9,7 +11,7 @@ public static class ControllerExtensions
         // Modüllerin Presentation katmanlarındaki AssemblyReference'ları
         var assemblies = new[]
         {
-            typeof(BKCordServer.Modules.Identity.Presentation.AssemblyReference).Assembly,
+            typeof(IdentityModule).Assembly,
             // diğer modüller...
         };
 
