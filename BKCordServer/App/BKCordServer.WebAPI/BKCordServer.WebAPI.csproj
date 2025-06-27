@@ -18,7 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\..\..\Modules\Identity\BKCordServer.Identity\BKCordServer.Identity.csproj" />
+	<ProjectReference Include="..\..\Modules\Identity\BKCordServer.Identity\BKCordServer.Identity.csproj" />
+	<ProjectReference Include="..\..\Shared\Shared.Kernel\Shared.Kernel.csproj" />
   </ItemGroup>
 
 </Project>
