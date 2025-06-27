@@ -9,19 +9,19 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         // Name - opsiyonel ama girilirse en az 2 karakter
         RuleFor(x => x.Name)
             .MinimumLength(2).WithMessage("Name must be at least 2 characters long.")
-            .MaximumLength(50).WithMessage("Name cannot exceed 50 characters.")
+            .MaximumLength(100).WithMessage("Name cannot exceed 100 characters.")
             .When(x => !string.IsNullOrWhiteSpace(x.Name));
 
         // Middlename - opsiyonel ama girilirse en az 2 karakter
         RuleFor(x => x.Middlename)
             .MinimumLength(2).WithMessage("Middle name must be at least 2 characters long.")
-            .MaximumLength(50).WithMessage("Middle name cannot exceed 50 characters.")
+            .MaximumLength(100).WithMessage("Middle name cannot exceed 100 characters.")
             .When(x => !string.IsNullOrWhiteSpace(x.Middlename));
 
         // Surname - opsiyonel ama girilirse en az 2 karakter
         RuleFor(x => x.Surname)
             .MinimumLength(2).WithMessage("Surname must be at least 2 characters long.")
-            .MaximumLength(50).WithMessage("Surname cannot exceed 50 characters.")
+            .MaximumLength(100).WithMessage("Surname cannot exceed 100 characters.")
             .When(x => !string.IsNullOrWhiteSpace(x.Surname));
 
         // UserName - zorunlu (Identity default: letters and digits, no special chars except -)

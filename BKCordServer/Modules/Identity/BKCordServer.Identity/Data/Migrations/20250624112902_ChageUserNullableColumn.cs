@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BKCordServer.Modules.Identity.Infrastructure.Migrations
+namespace BKCordServer.Identity.Data.Migrations
 {
     /// <inheritdoc />
     public partial class ChageUserNullableColumn : Migration

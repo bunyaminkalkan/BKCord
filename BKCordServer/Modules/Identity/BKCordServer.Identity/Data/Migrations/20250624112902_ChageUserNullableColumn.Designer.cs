@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BKCordServer.Modules.Identity.Infrastructure.Migrations
+namespace BKCordServer.Identity.Data.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
     [Migration("20250624112902_ChageUserNullableColumn")]

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BKCordServer.Identity.Data.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20250623162241_InitialIdentityMigration")]
-    partial class InitialIdentityMigration
+    [Migration("20250627085630_ChangeAvatarUrlMaximumLengthOnUser")]
+    partial class ChangeAvatarUrlMaximumLengthOnUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace BKCordServer.Identity.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BKCordServer.Modules.Identity.Domain.Entities.RefreshToken", b =>
+            modelBuilder.Entity("BKCordServer.Identity.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,7 +53,7 @@ namespace BKCordServer.Identity.Data.Migrations
                     b.ToTable("refresh_tokens", "identity");
                 });
 
-            modelBuilder.Entity("BKCordServer.Modules.Identity.Domain.Entities.User", b =>
+            modelBuilder.Entity("BKCordServer.Identity.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -63,8 +63,8 @@ namespace BKCordServer.Identity.Data.Migrations
 
                     b.Property<string>("AvatarUrl")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -95,12 +95,10 @@ namespace BKCordServer.Identity.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Middlename")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -128,7 +126,6 @@ namespace BKCordServer.Identity.Data.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("Surname")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -220,9 +217,9 @@ namespace BKCordServer.Identity.Data.Migrations
                     b.ToTable("user_tokens", "identity");
                 });
 
-            modelBuilder.Entity("BKCordServer.Modules.Identity.Domain.Entities.RefreshToken", b =>
+            modelBuilder.Entity("BKCordServer.Identity.Domain.Entities.RefreshToken", b =>
                 {
-                    b.HasOne("BKCordServer.Modules.Identity.Domain.Entities.User", "User")
+                    b.HasOne("BKCordServer.Identity.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -233,7 +230,7 @@ namespace BKCordServer.Identity.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("BKCordServer.Modules.Identity.Domain.Entities.User", null)
+                    b.HasOne("BKCordServer.Identity.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -242,7 +239,7 @@ namespace BKCordServer.Identity.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("BKCordServer.Modules.Identity.Domain.Entities.User", null)
+                    b.HasOne("BKCordServer.Identity.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -251,7 +248,7 @@ namespace BKCordServer.Identity.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("BKCordServer.Modules.Identity.Domain.Entities.User", null)
+                    b.HasOne("BKCordServer.Identity.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

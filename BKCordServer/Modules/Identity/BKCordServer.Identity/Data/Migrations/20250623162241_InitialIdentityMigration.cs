@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BKCordServer.Modules.Identity.Infrastructure.Migrations
+namespace BKCordServer.Identity.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialIdentityMigration : Migration
