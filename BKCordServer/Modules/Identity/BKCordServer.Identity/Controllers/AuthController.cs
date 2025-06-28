@@ -1,11 +1,12 @@
-﻿using BKCordServer.Identity.UseCases.Auth.Register;
+﻿using BKCordServer.Identity.UseCases.Auth.Login;
+using BKCordServer.Identity.UseCases.Auth.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BKCordServer.Identity.Controllers;
 
 [ApiController]
-[Route("identity/auth")]
+[Route("[controller]/")]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -20,5 +21,12 @@ public class AuthController : ControllerBase
     {
         await _mediator.Send(request);
         return Ok();
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginCommand request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
     }
 }

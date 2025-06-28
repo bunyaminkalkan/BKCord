@@ -1,5 +1,8 @@
 ﻿using BKCordServer.Identity.Domain.Entities;
 using BKCordServer.Identity.Domain.Enums;
+using BKCordServer.Identity.DTOs;
+using BKCordServer.Identity.Repositories;
+using BKCordServer.Identity.UseCases.Auth.Login;
 using BKCordServer.Identity.UseCases.Auth.Register;
 using Microsoft.AspNetCore.Identity;
 using Shared.Kernel.Exceptions;
@@ -9,10 +12,41 @@ namespace BKCordServer.Identity.Services;
 public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManager;
+    private readonly IJwtService _jwtService;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-    public AuthService(UserManager<User> userManager)
+    public AuthService(UserManager<User> userManager, IJwtService jwtService, IRefreshTokenRepository refreshTokenRepository)
     {
         _userManager = userManager;
+        _jwtService = jwtService;
+        _refreshTokenRepository = refreshTokenRepository;
+    }
+
+    public async Task<JwtResponse> LoginAsync(LoginCommand request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if (user == null)
+        {
+            throw new BadRequestException("Invalid email or password");
+        }
+
+        var isValidPassword = await _userManager.CheckPasswordAsync(user, request.Password);
+        if (!isValidPassword)
+        {
+            throw new BadRequestException("Invalid email or password");
+        }
+
+        var tokens = await _jwtService.CreateTokenAsync(user);
+
+        var refreshToken = new RefreshToken
+        {
+            UserId = user.Id,
+            Token = tokens.RefreshToken
+        };
+
+        await _refreshTokenRepository.AddAsync(refreshToken);
+
+        return tokens;
     }
 
     public async Task RegisterAsync(RegisterCommand request)

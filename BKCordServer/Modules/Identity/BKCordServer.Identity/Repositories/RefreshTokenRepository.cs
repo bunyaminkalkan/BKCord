@@ -1,31 +1,27 @@
-﻿using BKCordServer.Identity.Domain.Entities;
+﻿using BKCordServer.Identity.Data.Context.PostgreSQL;
+using BKCordServer.Identity.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BKCordServer.Identity.Repositories;
 
 public class RefreshTokenRepository : IRefreshTokenRepository
 {
-    public Task AddAsync(RefreshToken refreshToken)
+    private readonly AppIdentityDbContext _dbContext;
+
+    public RefreshTokenRepository(AppIdentityDbContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
     }
 
-    public Task DeleteAsync(RefreshToken refreshToken)
+    public async Task AddAsync(RefreshToken refreshToken)
     {
-        throw new NotImplementedException();
+        await _dbContext.RefreshTokens.AddAsync(refreshToken);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task<RefreshToken?> GetByIdAsync(string id)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task DeleteAsync(RefreshToken refreshToken) =>
+        _dbContext.RefreshTokens.Remove(refreshToken);
 
-    public Task<RefreshToken?> GetByUserIdAsync(string userId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(RefreshToken refreshToken)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<RefreshToken?> GetByUserIdAsync(string userId) =>
+        await _dbContext.RefreshTokens.FirstOrDefaultAsync(r => r.UserId == userId);
 }

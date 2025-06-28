@@ -1,5 +1,6 @@
 ﻿using BKCordServer.Identity.Data.Context.PostgreSQL;
 using BKCordServer.Identity.Domain.Entities;
+using BKCordServer.Identity.Options;
 using BKCordServer.Identity.Repositories;
 using BKCordServer.Identity.Services;
 using FluentValidation;
@@ -43,10 +44,22 @@ public class IdentityModule : IModule
         services.AddValidatorsFromAssembly(typeof(IdentityModule).Assembly);
         #endregion
 
-        #region Scoped
+        #region Interfaces
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IJwtService, JwtService>();
+        #endregion
+
+        #region Auth
+        services.ConfigureOptions<JwtOptionsSetup>();
+        services.ConfigureOptions<JwtBearerOptionsSetup>();
+
+        services.AddAuthentication()
+            .AddJwtBearer();
+
+        services.AddAuthorization();
         #endregion
 
         Console.WriteLine("Identity module services registered");
