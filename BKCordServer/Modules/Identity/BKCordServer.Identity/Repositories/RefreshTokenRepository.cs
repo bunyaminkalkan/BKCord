@@ -19,9 +19,18 @@ public class RefreshTokenRepository : IRefreshTokenRepository
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task UpdateAsync(RefreshToken refreshToken)
+    {
+        _dbContext.Update(refreshToken);
+        await _dbContext.SaveChangesAsync();
+    }
+
     public async Task DeleteAsync(RefreshToken refreshToken) =>
         _dbContext.RefreshTokens.Remove(refreshToken);
 
     public async Task<RefreshToken?> GetByUserIdAsync(string userId) =>
         await _dbContext.RefreshTokens.FirstOrDefaultAsync(r => r.UserId == userId);
+
+    public async Task<RefreshToken?> GetByRefreshTokenAsync(string refreshToken) =>
+        await _dbContext.RefreshTokens.Include(r => r.User).FirstOrDefaultAsync(r => r.Token == refreshToken);
 }

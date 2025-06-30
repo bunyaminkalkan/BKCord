@@ -1,4 +1,5 @@
 ﻿using BKCordServer.Identity.UseCases.Auth.Login;
+using BKCordServer.Identity.UseCases.Auth.RefreshToken;
 using BKCordServer.Identity.UseCases.Auth.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,13 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginCommand request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand request)
     {
         var response = await _mediator.Send(request);
         return Ok(response);
