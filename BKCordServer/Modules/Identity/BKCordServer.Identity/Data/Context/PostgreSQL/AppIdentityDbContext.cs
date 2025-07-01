@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class AppIdentityDbContext : IdentityUserContext<User>
+public class AppIdentityDbContext : IdentityUserContext<User, Guid>
 {
     public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options) { }
 
@@ -19,9 +19,9 @@ public class AppIdentityDbContext : IdentityUserContext<User>
         base.OnModelCreating(builder);
 
         // Tablo adlarını ve şemayı özelleştir
-        builder.Entity<IdentityUserClaim<string>>(e => { e.ToTable(name: "user_claims", schema: Tables.IdentitySchema); });
-        builder.Entity<IdentityUserLogin<string>>(e => { e.ToTable(name: "user_logins", schema: Tables.IdentitySchema); });
-        builder.Entity<IdentityUserToken<string>>(e => { e.ToTable(name: "user_tokens", schema: Tables.IdentitySchema); });
+        builder.Entity<IdentityUserClaim<Guid>>(e => { e.ToTable(name: "user_claims", schema: Tables.IdentitySchema); });
+        builder.Entity<IdentityUserLogin<Guid>>(e => { e.ToTable(name: "user_logins", schema: Tables.IdentitySchema); });
+        builder.Entity<IdentityUserToken<Guid>>(e => { e.ToTable(name: "user_tokens", schema: Tables.IdentitySchema); });
 
         // Konfigürasyonları uygula
         builder.ApplyConfiguration(new UserConfiguration());

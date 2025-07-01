@@ -25,7 +25,7 @@ public sealed class JwtService : IJwtService
 
         var claims = new Claim[]
         {
-            new Claim("user_id", user.Id),
+            new Claim("user_id", user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Exp, expires.ToString()),
             new Claim(JwtRegisteredClaimNames.Iss, _jwtOptions.Issuer),

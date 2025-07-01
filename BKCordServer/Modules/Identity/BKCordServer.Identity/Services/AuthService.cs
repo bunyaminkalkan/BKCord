@@ -55,7 +55,7 @@ public class AuthService : IAuthService
 
         var user = new User
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = Guid.NewGuid(),
             UserName = request.UserName,
             Email = request.Email,
             Name = request.Name,

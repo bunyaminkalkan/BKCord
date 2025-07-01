@@ -28,7 +28,7 @@ public class RefreshTokenRepository : IRefreshTokenRepository
     public async Task DeleteAsync(RefreshToken refreshToken) =>
         _dbContext.RefreshTokens.Remove(refreshToken);
 
-    public async Task<RefreshToken?> GetByUserIdAsync(string userId) =>
+    public async Task<RefreshToken?> GetByUserIdAsync(Guid userId) =>
         await _dbContext.RefreshTokens.FirstOrDefaultAsync(r => r.UserId == userId);
 
     public async Task<RefreshToken?> GetByRefreshTokenAsync(string refreshToken) =>

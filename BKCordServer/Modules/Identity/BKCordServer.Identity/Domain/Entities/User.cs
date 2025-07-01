@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BKCordServer.Identity.Domain.Entities;
 
-public sealed class User : IdentityUser
+public sealed class User : IdentityUser<Guid>
 {
     public string Name { get; set; }
     public string Middlename { get; set; }

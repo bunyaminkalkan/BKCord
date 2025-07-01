@@ -11,7 +11,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable(Tables.Users, Tables.IdentitySchema);
 
         //IdentityUser zaten tanımlıyor
-        //builder.HasKey(u => u.Id);
+        builder.HasKey(u => u.Id);
 
         builder.Property(u => u.Name).HasMaxLength(100).IsRequired(false);
         builder.Property(u => u.Middlename).HasMaxLength(100).IsRequired(false);
