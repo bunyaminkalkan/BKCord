@@ -19,6 +19,7 @@
 
   <ItemGroup>
 	<ProjectReference Include="..\..\Modules\Identity\BKCordServer.Identity\BKCordServer.Identity.csproj" />
+	<ProjectReference Include="..\..\Modules\Server\BKCordServer.Server\BKCordServer.Server.csproj" />
 	<ProjectReference Include="..\..\Shared\Shared.Kernel\Shared.Kernel.csproj" />
   </ItemGroup>
 
