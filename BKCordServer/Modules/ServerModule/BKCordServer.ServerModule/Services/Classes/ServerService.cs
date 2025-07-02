@@ -13,7 +13,7 @@ public class ServerService : IServerService
         _serverRepository = serverRepository;
     }
 
-    public async Task CreateAsync(Guid userId, string name, string logoUrl)
+    public async Task<Server> CreateAsync(Guid userId, string name, string logoUrl)
     {
         var now = DateTime.UtcNow;
 
@@ -28,6 +28,18 @@ public class ServerService : IServerService
         };
 
         await _serverRepository.AddAsync(server);
+
+        return server;
+    }
+
+    public async Task<Server> GetByIdAsync(Guid serverId)
+    {
+        var server = await _serverRepository.GetByIdAsync(serverId);
+
+        if (server == null)
+            throw new NotFoundException($"Server cannot be find with {serverId} server id");
+
+        return server;
     }
 
     public async Task<Guid> GetServerIdByInviteCodeAsync(string inviteCode)

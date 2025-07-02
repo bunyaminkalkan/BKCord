@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using BKCordServer.ServerModule.DTOs;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 
 namespace BKCordServer.ServerModule.UseCases.Server.CreateServer;
-public sealed record CreateServerCommand(string Name, IFormFile Logo) : IRequest;
+public sealed record CreateServerCommand(string Name, IFormFile Logo) : IRequest<ServerInfDTO>;

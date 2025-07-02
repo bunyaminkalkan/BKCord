@@ -25,6 +25,9 @@ public class ServerMemberRepository : IServerMemberRepository
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task<bool> ExistAsync(Guid userId, Guid serverId) =>
+        await _dbContext.ServerMembers.AnyAsync(sm => sm.UserId == userId && sm.ServerId == serverId);
+
     public async Task<ServerMember?> GetByUserIdAndServerId(Guid userId, Guid serverId) =>
         await _dbContext.ServerMembers.FirstOrDefaultAsync(sm => sm.UserId == userId && sm.ServerId == serverId);
 

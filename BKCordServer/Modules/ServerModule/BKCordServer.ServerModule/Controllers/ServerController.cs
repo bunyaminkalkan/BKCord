@@ -1,4 +1,5 @@
 ﻿using BKCordServer.ServerModule.UseCases.Server.CreateServer;
+using BKCordServer.ServerModule.UseCases.Server.GetServerInf;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,14 @@ public class ServerController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateServerAsync([FromForm] CreateServerCommand request)
     {
-        await _mediator.Send(request);
-        return Ok();
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetServerInfAsync([FromQuery] GetServerInfQuery request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
     }
 }

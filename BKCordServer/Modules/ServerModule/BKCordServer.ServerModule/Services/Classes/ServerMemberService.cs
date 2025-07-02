@@ -36,4 +36,12 @@ public class ServerMemberService : IServerMemberService
 
     public async Task<IEnumerable<Guid>> GetServerIdsByUserIdAsync(Guid userId) =>
         await _serverMemberRepository.GetServerIdsByUserIdAsync(userId);
+
+    public async Task ValidateMemberJoinedServer(Guid userId, Guid serverId)
+    {
+        var isMember = await _serverMemberRepository.ExistAsync(userId, serverId);
+
+        if (!isMember)
+            throw new BadRequestException("Invalid server id or user id");
+    }
 }
