@@ -1,5 +1,4 @@
 ﻿using BKCordServer.Identity;
-using BKCordServer.Server;
 using BKCordServer.WebAPI.Middlewares;
 using FluentValidation;
 using Shared.Kernel.DependencyInjection;
@@ -14,7 +13,7 @@ public static class ModuleInstallerExtensions
         List<Assembly> assemblies =
             [
             typeof(IdentityModule).Assembly,
-            typeof(ServerModule).Assembly
+            typeof(ServerModule.ServerModule).Assembly
             ];
 
         var installers = assemblies
