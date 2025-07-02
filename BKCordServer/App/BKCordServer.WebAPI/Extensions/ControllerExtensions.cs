@@ -12,6 +12,7 @@ public static class ControllerExtensions
         var assemblies = new[]
         {
             typeof(IdentityModule).Assembly,
+            typeof(ServerModule.ServerModule).Assembly,
             // diğer modüller...
         };
 

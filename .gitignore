@@ -6,6 +6,9 @@
 #docker
 docker-compose.yml
 
+#static files
+BKCordServer/App/BKCordServer.WebAPI/wwwroot/*
+
 # User-specific files
 *.rsuser
 *.suo

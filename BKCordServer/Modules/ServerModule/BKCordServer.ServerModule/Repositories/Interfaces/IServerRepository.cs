@@ -1,0 +1,10 @@
+﻿using BKCordServer.ServerModule.Domain.Entities;
+
+namespace BKCordServer.ServerModule.Repositories.Interfaces;
+public interface IServerRepository
+{
+    Task AddAsync(Server server);
+    Task UpdateAsync(Server server);
+    Task DeleteAsync(Server server);
+    Task<Server?> GetByIdAsync(Guid id);
+}

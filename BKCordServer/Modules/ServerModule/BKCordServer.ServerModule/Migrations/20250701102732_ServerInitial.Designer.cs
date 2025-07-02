@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BKCordServer.Server.Migrations
+namespace BKCordServer.ServerModule.Migrations
 {
     [DbContext(typeof(AppServerDbContext))]
     [Migration("20250701102732_ServerInitial")]

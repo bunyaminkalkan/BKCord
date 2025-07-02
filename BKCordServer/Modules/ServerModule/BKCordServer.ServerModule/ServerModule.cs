@@ -1,4 +1,8 @@
 ﻿using BKCordServer.ServerModule.Data.Context.PostgreSQL;
+using BKCordServer.ServerModule.Repositories.Classes;
+using BKCordServer.ServerModule.Repositories.Interfaces;
+using BKCordServer.ServerModule.Services.Classes;
+using BKCordServer.ServerModule.Services.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +31,11 @@ public class ServerModule : IModule
         });
 
         services.AddValidatorsFromAssembly(typeof(ServerModule).Assembly);
+        #endregion
+
+        #region Interfaces
+        services.AddScoped<IServerRepository, ServerRepository>();
+        services.AddScoped<IServerService, ServerService>();
         #endregion
 
         Console.WriteLine("Server module services registered");

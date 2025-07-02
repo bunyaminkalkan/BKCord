@@ -1,12 +1,13 @@
 ﻿using BKCordServer.Identity;
 using BKCordServer.WebAPI.Middlewares;
 using FluentValidation;
+using Shared.Kernel;
 using Shared.Kernel.DependencyInjection;
 using System.Reflection;
 
 namespace BKCordServer.WebAPI.Extensions;
 
-public static class ModuleInstallerExtensions
+public static class InstallerExtensions
 {
     public static IServiceCollection InstallModules(this IServiceCollection services, IConfiguration configuration)
     {
@@ -37,4 +38,10 @@ public static class ModuleInstallerExtensions
         typeof(T).IsAssignableFrom(typeInfo) &&
         !typeInfo.IsInterface &&
         !typeInfo.IsAbstract;
+
+    public static IServiceCollection InstallSharedServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        SharedInstaller.Install(services, configuration);
+        return services;
+    }
 }

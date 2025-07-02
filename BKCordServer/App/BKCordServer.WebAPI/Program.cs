@@ -9,6 +9,7 @@ builder.Services.AddModularControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.InstallSharedServices(builder.Configuration);
 builder.Services.InstallModules(builder.Configuration);
 
 var app = builder.Build();
@@ -19,6 +20,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseStaticFiles();
 
 app.UseExceptionMiddleware();
 

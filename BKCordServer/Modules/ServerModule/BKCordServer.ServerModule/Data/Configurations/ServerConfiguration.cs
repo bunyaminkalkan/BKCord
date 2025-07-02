@@ -1,12 +1,13 @@
 ﻿using BKCordServer.ServerModule.Constants;
+using BKCordServer.ServerModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BKCordServer.ServerModule.Data.Configurations;
 
-public sealed class ServerConfiguration : IEntityTypeConfiguration<Domain.Entities.Server>
+public sealed class ServerConfiguration : IEntityTypeConfiguration<Server>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Server> builder)
+    public void Configure(EntityTypeBuilder<Server> builder)
     {
         builder.ToTable(Tables.Servers, Tables.ServerSchema);
         builder.HasKey(s => s.Id);

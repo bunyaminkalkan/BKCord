@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BKCordServer.Server.Migrations
+namespace BKCordServer.ServerModule.Migrations
 {
     /// <inheritdoc />
     public partial class ServerInitial : Migration
