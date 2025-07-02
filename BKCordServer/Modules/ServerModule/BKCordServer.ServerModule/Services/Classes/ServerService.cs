@@ -1,6 +1,7 @@
 ﻿using BKCordServer.ServerModule.Domain.Entities;
 using BKCordServer.ServerModule.Repositories.Interfaces;
 using BKCordServer.ServerModule.Services.Interfaces;
+using Shared.Kernel.Exceptions;
 
 namespace BKCordServer.ServerModule.Services.Classes;
 public class ServerService : IServerService
@@ -27,6 +28,16 @@ public class ServerService : IServerService
         };
 
         await _serverRepository.AddAsync(server);
+    }
+
+    public async Task<Guid> GetServerIdByInviteCodeAsync(string inviteCode)
+    {
+        var serverId = await _serverRepository.GetServerIdByInviteCodeAsync(inviteCode);
+
+        if (serverId == null)
+            throw new NotFoundException($"Server connot find with {inviteCode} invite code");
+
+        return serverId!.Value;
     }
 
     private string GenerateInviteCode(int length = 15)

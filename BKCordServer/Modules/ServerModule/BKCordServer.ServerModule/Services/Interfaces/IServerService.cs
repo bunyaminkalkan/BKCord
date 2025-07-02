@@ -2,4 +2,5 @@
 public interface IServerService
 {
     Task CreateAsync(Guid userId, string Name, string LogoUrl);
+    Task<Guid> GetServerIdByInviteCodeAsync(string inviteCode);
 }

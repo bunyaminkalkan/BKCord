@@ -1,0 +1,34 @@
+﻿using BKCordServer.ServerModule.UseCases.ServerMember.JoinServer;
+using BKCordServer.ServerModule.UseCases.ServerMember.LeftServer;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BKCordServer.ServerModule.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+[Authorize]
+public class ServerMemberController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public ServerMemberController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    [HttpPost("join")]
+    public async Task<IActionResult> JoinServerAsync([FromBody] JoinServerCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok();
+    }
+
+    [HttpPost("left/{ServerId}")]
+    public async Task<IActionResult> LeftServerAsync([FromRoute] LeftServerCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok();
+    }
+}

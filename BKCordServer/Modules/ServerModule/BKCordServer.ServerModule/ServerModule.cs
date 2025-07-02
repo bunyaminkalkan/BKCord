@@ -35,7 +35,12 @@ public class ServerModule : IModule
 
         #region Interfaces
         services.AddScoped<IServerRepository, ServerRepository>();
+        services.AddScoped<IServerMemberRepository, ServerMemberRepository>();
+        services.AddScoped<IServerMembersHistoryRepository, ServerMembersHistoryRepository>();
+
         services.AddScoped<IServerService, ServerService>();
+        services.AddScoped<IServerMemberService, ServerMemberService>();
+        services.AddScoped<IServerMembersHistoryService, ServerMembersHistoryService>();
         #endregion
 
         Console.WriteLine("Server module services registered");

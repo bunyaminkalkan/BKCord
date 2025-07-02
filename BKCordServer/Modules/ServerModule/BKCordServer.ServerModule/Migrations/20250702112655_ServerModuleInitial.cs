@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace BKCordServer.ServerModule.Migrations
 {
     /// <inheritdoc />
-    public partial class ServerInitial : Migration
+    public partial class ServerModuleInitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -80,8 +81,8 @@ namespace BKCordServer.ServerModule.Migrations
                     ServerId = table.Column<Guid>(type: "uuid", nullable: false),
                     JoinedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LeftAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    RemovedReason = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    RemovedByUserId = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    RemovedReason = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    RemovedByUserId = table.Column<Guid>(type: "uuid", maxLength: 450, nullable: true),
                     WasBanned = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>

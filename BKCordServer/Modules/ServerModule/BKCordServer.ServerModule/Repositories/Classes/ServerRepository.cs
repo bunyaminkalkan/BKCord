@@ -35,4 +35,7 @@ public class ServerRepository : IServerRepository
     {
         return await _dbContext.Servers.FirstOrDefaultAsync(s => s.Id == id);
     }
+
+    public async Task<Guid?> GetServerIdByInviteCodeAsync(string inviteCode) =>
+        (await _dbContext.Servers.FirstOrDefaultAsync(s => s.InviteCode == inviteCode))?.Id;
 }

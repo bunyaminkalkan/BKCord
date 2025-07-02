@@ -1,0 +1,6 @@
+﻿namespace BKCordServer.ServerModule.Services.Interfaces;
+public interface IServerMemberService
+{
+    Task JoinServerAsync(Guid userId, Guid serverId);
+    Task LeftServerAsync(Guid userId, Guid serverId);
+}

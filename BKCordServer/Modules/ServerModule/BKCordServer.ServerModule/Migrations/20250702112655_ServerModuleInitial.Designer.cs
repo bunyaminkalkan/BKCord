@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BKCordServer.ServerModule.Migrations
 {
     [DbContext(typeof(AppServerDbContext))]
-    [Migration("20250701102732_ServerInitial")]
-    partial class ServerInitial
+    [Migration("20250702112655_ServerModuleInitial")]
+    partial class ServerModuleInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace BKCordServer.ServerModule.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BKCordServer.Server.Domain.Entities.Role", b =>
+            modelBuilder.Entity("BKCordServer.ServerModule.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace BKCordServer.ServerModule.Migrations
                     b.ToTable("roles", "server");
                 });
 
-            modelBuilder.Entity("BKCordServer.Server.Domain.Entities.RoleMember", b =>
+            modelBuilder.Entity("BKCordServer.ServerModule.Domain.Entities.RoleMember", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -74,7 +74,7 @@ namespace BKCordServer.ServerModule.Migrations
                     b.ToTable("role_members", "server");
                 });
 
-            modelBuilder.Entity("BKCordServer.Server.Domain.Entities.RolePermission", b =>
+            modelBuilder.Entity("BKCordServer.ServerModule.Domain.Entities.RolePermission", b =>
                 {
                     b.Property<Guid>("RoleId")
                         .ValueGeneratedOnAdd()
@@ -90,7 +90,7 @@ namespace BKCordServer.ServerModule.Migrations
                     b.ToTable("role_permissions", "server");
                 });
 
-            modelBuilder.Entity("BKCordServer.Server.Domain.Entities.Server", b =>
+            modelBuilder.Entity("BKCordServer.ServerModule.Domain.Entities.Server", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -131,7 +131,7 @@ namespace BKCordServer.ServerModule.Migrations
                     b.ToTable("servers", "server");
                 });
 
-            modelBuilder.Entity("BKCordServer.Server.Domain.Entities.ServerMember", b =>
+            modelBuilder.Entity("BKCordServer.ServerModule.Domain.Entities.ServerMember", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -144,7 +144,7 @@ namespace BKCordServer.ServerModule.Migrations
                     b.ToTable("server_members", "server");
                 });
 
-            modelBuilder.Entity("BKCordServer.Server.Domain.Entities.ServerMembersHistory", b =>
+            modelBuilder.Entity("BKCordServer.ServerModule.Domain.Entities.ServerMembersHistory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,13 +156,11 @@ namespace BKCordServer.ServerModule.Migrations
                     b.Property<DateTime>("LeftAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("RemovedByUserId")
-                        .IsRequired()
+                    b.Property<Guid?>("RemovedByUserId")
                         .HasMaxLength(450)
-                        .HasColumnType("character varying(450)");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("RemovedReason")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 

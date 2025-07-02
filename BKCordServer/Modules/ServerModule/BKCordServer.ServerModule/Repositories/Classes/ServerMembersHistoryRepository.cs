@@ -31,6 +31,15 @@ public class ServerMembersHistoryRepository : IServerMembersHistoryRepository
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task DeleteAllByServerIdAsync(Guid serverId)
+    {
+        var serverMembersHistories = await _dbContext.ServerMembersHistory.Where(smh => smh.ServerId == serverId).ToListAsync();
+
+        _dbContext.RemoveRange(serverMembersHistories);
+        await _dbContext.SaveChangesAsync();
+    }
+
+
     public async Task<ServerMembersHistory?> GetByUserIdAndServerIdAsync(Guid userId, Guid serverId) =>
         await _dbContext.ServerMembersHistory.FirstOrDefaultAsync(smh => smh.UserId == userId && smh.ServerId == serverId);
 }

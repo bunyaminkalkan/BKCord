@@ -25,10 +25,12 @@ public sealed class ServerMembersHistoryConfiguration : IEntityTypeConfiguration
             .IsRequired();
 
         builder.Property(smh => smh.RemovedReason)
-            .HasMaxLength(500);
+            .HasMaxLength(500)
+            .IsRequired(false);
 
         builder.Property(smh => smh.RemovedByUserId)
-            .HasMaxLength(450);
+            .HasMaxLength(450)
+            .IsRequired(false);
 
         builder.Property(smh => smh.WasBanned)
             .IsRequired();

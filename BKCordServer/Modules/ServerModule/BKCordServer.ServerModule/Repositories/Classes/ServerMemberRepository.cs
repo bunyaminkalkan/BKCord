@@ -18,17 +18,16 @@ public class ServerMemberRepository : IServerMemberRepository
         await _dbContext.ServerMembers.AddAsync(serverMember);
         await _dbContext.SaveChangesAsync();
     }
-    public async Task UpdateAsync(ServerMember serverMember)
-    {
-        _dbContext.ServerMembers.Update(serverMember);
-        await _dbContext.SaveChangesAsync();
-    }
 
     public async Task DeleteAsync(ServerMember serverMember)
     {
         _dbContext.ServerMembers.Remove(serverMember);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<ServerMember?> GetByUserIdAndServerId(Guid userId, Guid serverId) =>
+        await _dbContext.ServerMembers.FirstOrDefaultAsync(sm => sm.UserId == userId && sm.ServerId == serverId);
+
     public async Task<IEnumerable<Guid>> GetServerIdsByUserIdAsync(Guid userId) =>
         await _dbContext.ServerMembers.Where(sm => sm.UserId == userId).Select(sm => sm.ServerId).ToListAsync();
 
