@@ -40,6 +40,9 @@ public class ServerService : IServerService
         return serverId!.Value;
     }
 
+    public async Task<IEnumerable<Server>> GetAllByIdsAsync(IEnumerable<Guid> ids) =>
+        await _serverRepository.GetAllByIdsAsync(ids);
+
     private string GenerateInviteCode(int length = 15)
     {
         var guid = Guid.NewGuid();

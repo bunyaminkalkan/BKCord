@@ -33,4 +33,7 @@ public class ServerMemberService : IServerMemberService
 
         await _serverMemberRepository.DeleteAsync(serverMember);
     }
+
+    public async Task<IEnumerable<Guid>> GetServerIdsByUserIdAsync(Guid userId) =>
+        await _serverMemberRepository.GetServerIdsByUserIdAsync(userId);
 }

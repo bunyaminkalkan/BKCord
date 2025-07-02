@@ -1,4 +1,5 @@
-﻿using BKCordServer.ServerModule.UseCases.ServerMember.JoinServer;
+﻿using BKCordServer.ServerModule.UseCases.ServerMember.GetServersByMemberUser;
+using BKCordServer.ServerModule.UseCases.ServerMember.JoinServer;
 using BKCordServer.ServerModule.UseCases.ServerMember.LeftServer;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -30,5 +31,13 @@ public class ServerMemberController : ControllerBase
     {
         await _mediator.Send(request);
         return Ok();
+    }
+
+    [HttpPost("listServers")]
+    public async Task<IActionResult> ListServersAsync()
+    {
+        var request = new GetServersByMemberUserQuery();
+        var response = await _mediator.Send(request);
+        return Ok(response);
     }
 }
