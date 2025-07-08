@@ -36,7 +36,7 @@ public class RoleRepository : IRoleRepository
         await _dbContext.Roles.Where(r => ids.Contains(r.Id)).ToListAsync();
 
     public async Task<IEnumerable<Role>> GetAllByServerIdAsync(Guid serverId) =>
-        await _dbContext.Roles.Where(r => r.ServerId == serverId).ToListAsync();
+        await _dbContext.Roles.Where(r => r.ServerId == serverId).OrderByDescending(r => r.Hierarchy).ToListAsync();
 
     public async Task<Role?> GetByServerIdAndNameAsync(Guid serverId, string name) =>
         await _dbContext.Roles.FirstOrDefaultAsync(r => r.ServerId == serverId && r.Name == name);

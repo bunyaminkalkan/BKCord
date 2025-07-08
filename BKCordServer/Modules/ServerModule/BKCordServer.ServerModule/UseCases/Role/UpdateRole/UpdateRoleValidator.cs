@@ -2,14 +2,14 @@
 using FluentValidation;
 using System.Text.RegularExpressions;
 
-namespace BKCordServer.ServerModule.UseCases.Role.CreateRole;
-public class CreateRoleValidator : AbstractValidator<CreateRoleCommand>
+namespace BKCordServer.ServerModule.UseCases.Role.UpdateRole;
+public class UpdateRoleValidator : AbstractValidator<UpdateRoleCommand>
 {
-    public CreateRoleValidator()
+    public UpdateRoleValidator()
     {
-        RuleFor(r => r.ServerId)
+        RuleFor(r => r.RoleId)
             .NotEmpty()
-            .WithMessage("Server ID is required.");
+            .WithMessage("Role ID is required.");
 
         RuleFor(r => r.Name)
             .NotEmpty()

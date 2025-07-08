@@ -2,6 +2,8 @@
 using BKCordServer.ServerModule.Repositories.Interfaces;
 using BKCordServer.ServerModule.Services.Interfaces;
 using BKCordServer.ServerModule.UseCases.Role.CreateRole;
+using BKCordServer.ServerModule.UseCases.Role.DeleteRole;
+using BKCordServer.ServerModule.UseCases.Role.UpdateRole;
 using Shared.Kernel.Exceptions;
 
 namespace BKCordServer.ServerModule.Services.Classes;
@@ -21,14 +23,38 @@ public class RoleService : IRoleService
             ServerId = request.ServerId,
             Name = request.Name,
             Color = request.Color,
-            Hierarchy = request.Hierarchy
+            Hierarchy = request.Hierarchy,
+            RolePermissions = request.RolePermissions
         };
 
         await _roleRepository.AddAsync(role);
     }
 
-    public async Task DeleteAsync(Role role) =>
+    public async Task UpdateAsync(UpdateRoleCommand request)
+    {
+        var role = await _roleRepository.GetByIdAsync(request.RoleId);
+
+        if (role == null)
+            throw new NotFoundException($"Role cannot be find with {request.RoleId} role id");
+
+        role.Name = request.Name;
+        role.Color = request.Color;
+        role.Hierarchy = request.Hierarchy;
+        role.RolePermissions = request.RolePermissions;
+
+        await _roleRepository.UpdateAsync(role);
+    }
+
+    public async Task DeleteAsync(DeleteRoleCommand request)
+    {
+        var role = await _roleRepository.GetByIdAsync(request.RoleId);
+
+        if (role == null)
+            throw new NotFoundException($"Role cannot be find with {request.RoleId} role id");
+
         await _roleRepository.DeleteAsync(role);
+    }
+
 
     public async Task<Role> GetByIdAsync(Guid id)
     {

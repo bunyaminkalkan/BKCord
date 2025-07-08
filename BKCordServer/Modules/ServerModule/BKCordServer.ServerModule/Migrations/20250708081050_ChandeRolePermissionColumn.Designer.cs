@@ -3,6 +3,7 @@ using System;
 using BKCordServer.ServerModule.Data.Context.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BKCordServer.ServerModule.Migrations
 {
     [DbContext(typeof(AppServerDbContext))]
-    partial class AppServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250708081050_ChandeRolePermissionColumn")]
+    partial class ChandeRolePermissionColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,7 +68,13 @@ namespace BKCordServer.ServerModule.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("UserId", "RoleId");
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GivenBy")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "RoleId", "ServerId");
 
                     b.ToTable("role_members", "server");
                 });

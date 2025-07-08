@@ -1,4 +1,7 @@
 ﻿using BKCordServer.ServerModule.UseCases.Role.CreateRole;
+using BKCordServer.ServerModule.UseCases.Role.DeleteRole;
+using BKCordServer.ServerModule.UseCases.Role.GetServerRoles;
+using BKCordServer.ServerModule.UseCases.Role.UpdateRole;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,5 +24,27 @@ public class RoleController : ControllerBase
     {
         await _mediator.Send(request);
         return Ok();
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateRoleAsync([FromBody] UpdateRoleCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok();
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteRoleAsync([FromBody] DeleteRoleCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok();
+    }
+
+    [HttpGet("{ServerId}")]
+    public async Task<IActionResult> GetServerRolesAsync([FromRoute] string ServerId)
+    {
+        var request = new GetServerRolesQuery(Guid.Parse(ServerId));
+        var response = await _mediator.Send(request);
+        return Ok(response);
     }
 }

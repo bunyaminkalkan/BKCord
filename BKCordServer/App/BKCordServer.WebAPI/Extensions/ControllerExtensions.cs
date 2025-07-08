@@ -1,4 +1,5 @@
 ﻿using BKCordServer.Identity;
+using System.Text.Json.Serialization;
 
 namespace BKCordServer.WebAPI.Extensions;
 
@@ -6,7 +7,11 @@ public static class ControllerExtensions
 {
     public static IMvcBuilder AddModularControllers(this IServiceCollection services)
     {
-        var mvcBuilder = services.AddControllers();
+        var mvcBuilder = services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            }); ;
 
         // Modüllerin Presentation katmanlarındaki AssemblyReference'ları
         var assemblies = new[]

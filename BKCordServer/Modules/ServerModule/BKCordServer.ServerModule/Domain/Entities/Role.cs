@@ -1,4 +1,6 @@
-﻿namespace BKCordServer.ServerModule.Domain.Entities;
+﻿using BKCordServer.ServerModule.Domain.Enums;
+
+namespace BKCordServer.ServerModule.Domain.Entities;
 
 public class Role
 {
@@ -7,4 +9,5 @@ public class Role
     public string Name { get; set; }
     public string Color { get; set; }
     public short Hierarchy { get; set; }
+    public List<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
 }

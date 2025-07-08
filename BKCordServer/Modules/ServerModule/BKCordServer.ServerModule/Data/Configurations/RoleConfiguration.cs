@@ -1,5 +1,6 @@
 ﻿using BKCordServer.ServerModule.Constants;
 using BKCordServer.ServerModule.Domain.Entities;
+using BKCordServer.ServerModule.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -27,5 +28,14 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
 
         builder.HasIndex(r => new { r.ServerId, r.Name })
             .IsUnique();
+
+        builder.Property(r => r.RolePermissions)
+            .HasConversion(
+                v => string.Join(',', v.Select(p => p.ToString())),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                     .Select(s => Enum.Parse<RolePermission>(s.Trim()))
+                     .ToList()
+            )
+            .HasMaxLength(2000);
     }
 }

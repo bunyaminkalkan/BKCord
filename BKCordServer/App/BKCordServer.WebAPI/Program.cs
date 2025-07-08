@@ -1,9 +1,15 @@
 using BKCordServer.WebAPI.Extensions;
 using Scalar.AspNetCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddModularControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

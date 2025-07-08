@@ -3,6 +3,7 @@ using System;
 using BKCordServer.ServerModule.Data.Context.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BKCordServer.ServerModule.Migrations
 {
     [DbContext(typeof(AppServerDbContext))]
-    partial class AppServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250708091021_ChandeRoleMemberTable")]
+    partial class ChandeRoleMemberTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

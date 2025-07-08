@@ -1,4 +1,4 @@
-﻿using BKCordServer.ServerModule.Domain.Entities;
+﻿using BKCordServer.ServerModule.Domain.Enums;
 
 namespace BKCordServer.ServerModule.Repositories.Interfaces;
 public interface IRolePermissionRepository
