@@ -25,12 +25,6 @@ public class ServerRepository : IServerRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Server server)
-    {
-        _dbContext.Servers.Remove(server);
-        await _dbContext.SaveChangesAsync();
-    }
-
     public async Task<Server?> GetByIdAsync(Guid id)
     {
         return await _dbContext.Servers.FirstOrDefaultAsync(s => s.Id == id);

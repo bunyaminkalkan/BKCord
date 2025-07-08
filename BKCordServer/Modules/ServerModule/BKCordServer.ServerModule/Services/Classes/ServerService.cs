@@ -32,6 +32,13 @@ public class ServerService : IServerService
         return server;
     }
 
+    public async Task DeleteAsync(Server server)
+    {
+        server.Status = Domain.Enums.ServerStatus.Deleted;
+
+        await _serverRepository.UpdateAsync(server);
+    }
+
     public async Task<Server> GetByIdAsync(Guid serverId)
     {
         var server = await _serverRepository.GetByIdAsync(serverId);

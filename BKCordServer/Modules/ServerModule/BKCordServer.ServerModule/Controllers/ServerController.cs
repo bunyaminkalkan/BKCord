@@ -1,4 +1,5 @@
 ﻿using BKCordServer.ServerModule.UseCases.Server.CreateServer;
+using BKCordServer.ServerModule.UseCases.Server.DeleteServer;
 using BKCordServer.ServerModule.UseCases.Server.GetServerInf;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +24,14 @@ public class ServerController : ControllerBase
     {
         var response = await _mediator.Send(request);
         return Ok(response);
+    }
+
+    [HttpDelete("{serverId}")]
+    public async Task<IActionResult> DeleteServerAsync([FromRoute] string serverId)
+    {
+        var request = new DeleteServerCommand(Guid.Parse(serverId));
+        await _mediator.Send(request);
+        return Ok();
     }
 
     [HttpGet]
