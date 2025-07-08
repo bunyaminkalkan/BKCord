@@ -34,17 +34,15 @@ public class RoleController : ControllerBase
     }
 
     [HttpDelete("{RoleId}")]
-    public async Task<IActionResult> DeleteRoleAsync([FromRoute] string RoleId)
+    public async Task<IActionResult> DeleteRoleAsync([FromRoute] DeleteRoleCommand request)
     {
-        var request = new DeleteRoleCommand(Guid.Parse(RoleId));
         await _mediator.Send(request);
         return Ok();
     }
 
     [HttpGet("{ServerId}")]
-    public async Task<IActionResult> GetServerRolesAsync([FromRoute] string ServerId)
+    public async Task<IActionResult> GetServerRolesAsync([FromRoute] GetServerRolesQuery request)
     {
-        var request = new GetServerRolesQuery(Guid.Parse(ServerId));
         var response = await _mediator.Send(request);
         return Ok(response);
     }

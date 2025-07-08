@@ -25,10 +25,9 @@ public class RoleMemberController : ControllerBase
         return Ok();
     }
 
-    [HttpDelete("{userId}/{roleId}")]
-    public async Task<IActionResult> DeleteRoleFromUserAsync([FromRoute] string userId, [FromRoute] string roleId)
+    [HttpDelete("{UserId}/{RoleId}")]
+    public async Task<IActionResult> DeleteRoleFromUserAsync([FromRoute] DeleteRoleFromUserCommand request)
     {
-        var request = new DeleteRoleFromUserCommand(Guid.Parse(userId), Guid.Parse(roleId));
         await _mediator.Send(request);
         return Ok();
     }

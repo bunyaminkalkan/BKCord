@@ -26,10 +26,9 @@ public class ServerController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("{serverId}")]
-    public async Task<IActionResult> DeleteServerAsync([FromRoute] string serverId)
+    [HttpDelete("{ServerId}")]
+    public async Task<IActionResult> DeleteServerAsync([FromRoute] DeleteServerCommand request)
     {
-        var request = new DeleteServerCommand(Guid.Parse(serverId));
         await _mediator.Send(request);
         return Ok();
     }

@@ -34,7 +34,7 @@ public class ServerMemberController : ControllerBase
     }
 
     [HttpPost("listServers")]
-    public async Task<IActionResult> ListServersAsync()
+    public async Task<IActionResult> ListServersByMemberUserAsync()
     {
         var request = new GetServersByMemberUserQuery();
         var response = await _mediator.Send(request);
