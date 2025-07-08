@@ -1,4 +1,5 @@
 ﻿using BKCordServer.ServerModule.UseCases.ServerMember.GetServersByMemberUser;
+using BKCordServer.ServerModule.UseCases.ServerMember.GetServerUsers;
 using BKCordServer.ServerModule.UseCases.ServerMember.JoinServer;
 using BKCordServer.ServerModule.UseCases.ServerMember.LeftServer;
 using MediatR;
@@ -33,10 +34,17 @@ public class ServerMemberController : ControllerBase
         return Ok();
     }
 
-    [HttpPost("listServers")]
+    [HttpGet("listServers")]
     public async Task<IActionResult> ListServersByMemberUserAsync()
     {
         var request = new GetServersByMemberUserQuery();
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+    [HttpGet("listServerUsers/{ServerId}")]
+    public async Task<IActionResult> ListServerUsersByMemberUserAsync([FromRoute] GetServerUsersQuery request)
+    {
         var response = await _mediator.Send(request);
         return Ok(response);
     }

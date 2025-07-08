@@ -26,7 +26,7 @@ public class RoleMemberService : IRoleMemberService
 
     public async Task DeleteRoleFromUserAsync(Guid userId, Guid roleId)
     {
-        var roleMember = await _roleMemberRepository.GetByUserIdRoleIdAndServerIdAsync(userId, roleId);
+        var roleMember = await _roleMemberRepository.GetByUserIdAndRoleIdAsync(userId, roleId);
 
         if (roleMember == null)
             throw new NotFoundException($"Role Member cannot be find with {userId} user id and {roleId} role id");
@@ -36,4 +36,7 @@ public class RoleMemberService : IRoleMemberService
 
     public async Task DeleteAllMembersAsync(Guid roleId) =>
         await _roleMemberRepository.DeleteAllMembersAsync(roleId);
+
+    public async Task<IEnumerable<Guid>> GetUserIdsByRoleIdAsync(Guid roleId) =>
+        await _roleMemberRepository.GetUserIdsByRoleIdAsync(roleId);
 }

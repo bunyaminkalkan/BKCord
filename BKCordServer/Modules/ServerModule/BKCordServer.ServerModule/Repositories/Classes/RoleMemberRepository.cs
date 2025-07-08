@@ -37,9 +37,12 @@ public class RoleMemberRepository : IRoleMemberRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<RoleMember?> GetByUserIdRoleIdAndServerIdAsync(Guid userId, Guid roleId) =>
+    public async Task<RoleMember?> GetByUserIdAndRoleIdAsync(Guid userId, Guid roleId) =>
         await _dbContext.RoleMembers.FirstOrDefaultAsync(rm => rm.UserId == userId && rm.RoleId == roleId);
 
-    public async Task<IEnumerable<Guid>> GetRoleIdsByUserIdAndServerIdAsync(Guid userId) =>
+    public async Task<IEnumerable<Guid>> GetRoleIdsByUserIdAsync(Guid userId) =>
         await _dbContext.RoleMembers.Where(rm => rm.UserId == userId).Select(rm => rm.RoleId).ToListAsync();
+
+    public async Task<IEnumerable<Guid>> GetUserIdsByRoleIdAsync(Guid roleId) =>
+        await _dbContext.RoleMembers.Where(rm => rm.RoleId == roleId).Select(rm => rm.UserId).ToListAsync();
 }
