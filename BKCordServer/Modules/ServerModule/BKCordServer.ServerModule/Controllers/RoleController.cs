@@ -33,9 +33,10 @@ public class RoleController : ControllerBase
         return Ok();
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteRoleAsync([FromBody] DeleteRoleCommand request)
+    [HttpDelete("{RoleId}")]
+    public async Task<IActionResult> DeleteRoleAsync([FromRoute] string RoleId)
     {
+        var request = new DeleteRoleCommand(Guid.Parse(RoleId));
         await _mediator.Send(request);
         return Ok();
     }
