@@ -1,5 +1,4 @@
-﻿using BKCordServer.Identity;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace BKCordServer.WebAPI.Extensions;
 
@@ -16,7 +15,7 @@ public static class ControllerExtensions
         // Modüllerin Presentation katmanlarındaki AssemblyReference'ları
         var assemblies = new[]
         {
-            typeof(IdentityModule).Assembly,
+            typeof(IdentityModule.IdentityModule).Assembly,
             typeof(ServerModule.ServerModule).Assembly,
             // diğer modüller...
         };
