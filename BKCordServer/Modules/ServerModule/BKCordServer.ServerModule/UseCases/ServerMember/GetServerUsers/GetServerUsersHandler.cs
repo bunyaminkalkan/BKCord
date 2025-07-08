@@ -30,6 +30,9 @@ public sealed class GetServerUsersHandler : IRequestHandler<GetServerUsersQuery,
                 .Except(addedUserIds)
                 .ToList();
 
+            if (userIds.Count == 0)
+                continue;
+
             addedUserIds.AddRange(userIds);
 
             var userInfs = await _mediator.Send(new ListUserInfsQuery(userIds));
