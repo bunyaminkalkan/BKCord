@@ -74,4 +74,7 @@ public class ServerService : IServerService
 
         return code.Substring(0, Math.Min(length, code.Length));
     }
+
+    public async Task<bool> IsUserOwnerTheServer(Guid userId, Guid serverId) =>
+        await _serverRepository.IsUserOwnerTheServer(userId, serverId);
 }

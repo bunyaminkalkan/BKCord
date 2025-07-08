@@ -5,13 +5,13 @@ public enum RolePermission
 
     KickMembers = 100,
     BanMembers = 101,
-    ManageRoles = 102,
-    AssignRoles = 103,
 
-    CreateChannels = 200,
-    ManageChannels = 201,
+    ManageRoles = 200,
 
-    ManageServer = 300,
+    CreateChannels = 300,
+    ManageChannels = 301,
+
+    ManageServer = 400,
 
     Administrator = 1000
 }

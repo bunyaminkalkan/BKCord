@@ -8,4 +8,5 @@ public interface IServerRepository
     Task<Server?> GetByIdAsync(Guid id);
     Task<IEnumerable<Server>> GetAllByIdsAsync(IEnumerable<Guid> ids);
     Task<Guid?> GetServerIdByInviteCodeAsync(string inviteCode);
+    Task<bool> IsUserOwnerTheServer(Guid userId, Guid serverId);
 }

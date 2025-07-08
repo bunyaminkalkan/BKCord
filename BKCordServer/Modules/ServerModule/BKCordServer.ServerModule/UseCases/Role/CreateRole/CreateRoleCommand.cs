@@ -8,4 +8,4 @@ public sealed record CreateRoleCommand(
     string Color,
     short Hierarchy,
     List<RolePermission> RolePermissions
-    ) : IRequest;
+    ) : IRequest<Domain.Entities.Role>;

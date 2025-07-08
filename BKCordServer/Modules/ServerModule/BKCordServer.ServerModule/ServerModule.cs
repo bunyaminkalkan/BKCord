@@ -1,4 +1,5 @@
-﻿using BKCordServer.ServerModule.Data.Context.PostgreSQL;
+﻿using BKCordServer.ServerModule.Commons.Helpers;
+using BKCordServer.ServerModule.Data.Context.PostgreSQL;
 using BKCordServer.ServerModule.Repositories.Classes;
 using BKCordServer.ServerModule.Repositories.Interfaces;
 using BKCordServer.ServerModule.Services.Classes;
@@ -45,6 +46,8 @@ public class ServerModule : IModule
         services.AddScoped<IServerMembersHistoryService, ServerMembersHistoryService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IRoleMemberService, RoleMemberService>();
+
+        services.AddScoped<IPermissionHelperService, PermissionHelperService>();
         #endregion
 
         Console.WriteLine("Server module services registered");

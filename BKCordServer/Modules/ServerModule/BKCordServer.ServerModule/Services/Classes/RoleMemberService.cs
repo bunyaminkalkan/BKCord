@@ -39,4 +39,7 @@ public class RoleMemberService : IRoleMemberService
 
     public async Task<IEnumerable<Guid>> GetUserIdsByRoleIdAsync(Guid roleId) =>
         await _roleMemberRepository.GetUserIdsByRoleIdAsync(roleId);
+
+    public async Task<IEnumerable<Guid>> GetRoleIdsByUserIdAsync(Guid userId) =>
+        await _roleMemberRepository.GetRoleIdsByUserIdAsync(userId);
 }

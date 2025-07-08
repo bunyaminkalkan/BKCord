@@ -10,4 +10,6 @@ public interface IRoleRepository
     Task<IEnumerable<Role>> GetAllByIdsAsync(IEnumerable<Guid> ids);
     Task<IEnumerable<Role>> GetAllByServerIdAsync(Guid serverId);
     Task<Role?> GetByServerIdAndNameAsync(Guid serverId, string name);
+    Task<IEnumerable<Role>> GetAllByIdsAndServerIdAsync(IEnumerable<Guid> roleIds, Guid serverId);
+    Task<Guid?> GetServerIdByRoleIdAsync(Guid roleId);
 }

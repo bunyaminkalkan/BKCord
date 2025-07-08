@@ -22,15 +22,15 @@ public class RoleController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateRoleAsync([FromBody] CreateRoleCommand request)
     {
-        await _mediator.Send(request);
-        return Ok();
+        var response = await _mediator.Send(request);
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<IActionResult> UpdateRoleAsync([FromBody] UpdateRoleCommand request)
     {
-        await _mediator.Send(request);
-        return Ok();
+        var response = await _mediator.Send(request);
+        return Ok(response);
     }
 
     [HttpDelete("{RoleId}")]

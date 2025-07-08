@@ -16,7 +16,7 @@ public class RoleService : IRoleService
         _roleRepository = roleRepository;
     }
 
-    public async Task CreateAsync(CreateRoleCommand request)
+    public async Task<Role> CreateAsync(CreateRoleCommand request)
     {
         var role = new Role
         {
@@ -28,9 +28,11 @@ public class RoleService : IRoleService
         };
 
         await _roleRepository.AddAsync(role);
+
+        return role;
     }
 
-    public async Task UpdateAsync(UpdateRoleCommand request)
+    public async Task<Role> UpdateAsync(UpdateRoleCommand request)
     {
         var role = await _roleRepository.GetByIdAsync(request.RoleId);
 
@@ -43,6 +45,8 @@ public class RoleService : IRoleService
         role.RolePermissions = request.RolePermissions;
 
         await _roleRepository.UpdateAsync(role);
+
+        return role;
     }
 
     public async Task DeleteAsync(DeleteRoleCommand request)
@@ -71,6 +75,19 @@ public class RoleService : IRoleService
 
     public async Task<IEnumerable<Role>> GetAllByServerIdAsync(Guid serverId) =>
         await _roleRepository.GetAllByServerIdAsync(serverId);
+
+    public async Task<IEnumerable<Role>> GetAllByIdsAndServerIdAsync(IEnumerable<Guid> roleIds, Guid serverId) =>
+        await _roleRepository.GetAllByIdsAndServerIdAsync(roleIds, serverId);
+
+    public async Task<Guid> GetServerIdByRoleIdAsync(Guid roleId)
+    {
+        var serverId = await _roleRepository.GetServerIdByRoleIdAsync(roleId);
+
+        if (serverId == null)
+            throw new NotFoundException($"Role cannot be find with {roleId} role id");
+
+        return serverId.Value;
+    }
 
     public async Task ValidateRoleExist(Guid serverId, string name)
     {

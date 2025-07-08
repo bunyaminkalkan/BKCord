@@ -35,4 +35,7 @@ public class ServerRepository : IServerRepository
 
     public async Task<Guid?> GetServerIdByInviteCodeAsync(string inviteCode) =>
         (await _dbContext.Servers.FirstOrDefaultAsync(s => s.InviteCode == inviteCode))?.Id;
+
+    public async Task<bool> IsUserOwnerTheServer(Guid userId, Guid serverId) =>
+        (await _dbContext.Servers.FindAsync(serverId)).OwnerId == userId;
 }
