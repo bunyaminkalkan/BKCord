@@ -3,19 +3,21 @@ using FluentValidation;
 using Shared.Kernel;
 using Shared.Kernel.DependencyInjection;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace BKCordServer.WebAPI.Extensions;
 
 public static class InstallerExtensions
 {
-    public static IServiceCollection InstallModules(this IServiceCollection services, IConfiguration configuration)
-    {
-        List<Assembly> assemblies =
+    static readonly List<Assembly> assemblies =
             [
             typeof(IdentityModule.IdentityModule).Assembly,
-            typeof(ServerModule.ServerModule).Assembly
+            typeof(ServerModule.ServerModule).Assembly,
+            typeof(TextChannelModule.TextChannelModule).Assembly
             ];
 
+    public static IServiceCollection InstallModules(this IServiceCollection services, IConfiguration configuration)
+    {
         var installers = assemblies
             .SelectMany(a => a.DefinedTypes)
             .Where(IsAssignableToType<IModule>)
@@ -42,5 +44,21 @@ public static class InstallerExtensions
     {
         SharedInstaller.Install(services, configuration);
         return services;
+    }
+
+    public static IMvcBuilder AddModularControllers(this IServiceCollection services)
+    {
+        var mvcBuilder = services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            }); ;
+
+        foreach (var assembly in assemblies)
+        {
+            mvcBuilder.AddApplicationPart(assembly);
+        }
+
+        return mvcBuilder;
     }
 }
