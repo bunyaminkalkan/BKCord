@@ -1,4 +1,5 @@
 using BKCordServer.WebAPI.Extensions;
+using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
@@ -13,7 +14,43 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddModularControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
+        {
+            ["Bearer"] = new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Description = "JWT Authorization header using the Bearer scheme."
+            }
+        };
+
+        document.SecurityRequirements = new List<OpenApiSecurityRequirement>
+        {
+            new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+            }
+        };
+
+        return Task.CompletedTask;
+    });
+});
 
 builder.Services.InstallSharedServices(builder.Configuration);
 builder.Services.InstallModules(builder.Configuration);
@@ -24,7 +61,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(options =>
+    {
+        options.WithTitle("My API")
+              .WithTheme(ScalarTheme.Default)
+              .WithModels(false);
+    });
 }
 
 app.UseStaticFiles();
