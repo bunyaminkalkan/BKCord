@@ -1,5 +1,5 @@
 ﻿using BKCordServer.ServerModule.Commons.Helpers;
-using BKCordServer.ServerModule.Domain.Enums;
+using BKCordServer.ServerModule.Contracts;
 using BKCordServer.ServerModule.Services.Interfaces;
 using MediatR;
 using Shared.Kernel.Exceptions;

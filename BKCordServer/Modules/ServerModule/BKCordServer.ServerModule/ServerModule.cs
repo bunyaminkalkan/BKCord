@@ -1,4 +1,5 @@
 ﻿using BKCordServer.ServerModule.Commons.Helpers;
+using BKCordServer.ServerModule.Contracts;
 using BKCordServer.ServerModule.Data.Context.PostgreSQL;
 using BKCordServer.ServerModule.Repositories.Classes;
 using BKCordServer.ServerModule.Repositories.Interfaces;
@@ -26,7 +27,10 @@ public class ServerModule : IModule
         #region MediatR
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(ServerModule).Assembly);
+            cfg.RegisterServicesFromAssemblies(
+                typeof(ServerModule).Assembly,
+                typeof(ServerModuleContractsMarker).Assembly
+                );
 
             cfg.AddOpenBehavior(typeof(FluentValidationBehavior<,>));
         });

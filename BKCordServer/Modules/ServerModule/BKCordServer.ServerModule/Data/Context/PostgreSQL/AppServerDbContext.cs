@@ -6,7 +6,7 @@ namespace BKCordServer.ServerModule.Data.Context.PostgreSQL;
 
 public class AppServerDbContext : DbContext
 {
-    public AppServerDbContext(DbContextOptions options) : base(options)
+    public AppServerDbContext(DbContextOptions<AppServerDbContext> options) : base(options)
     {
     }
 

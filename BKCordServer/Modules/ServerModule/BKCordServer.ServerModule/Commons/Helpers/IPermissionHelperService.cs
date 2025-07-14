@@ -1,4 +1,4 @@
-﻿using BKCordServer.ServerModule.Domain.Enums;
+﻿using BKCordServer.ServerModule.Contracts;
 
 namespace BKCordServer.ServerModule.Commons.Helpers;
 public interface IPermissionHelperService

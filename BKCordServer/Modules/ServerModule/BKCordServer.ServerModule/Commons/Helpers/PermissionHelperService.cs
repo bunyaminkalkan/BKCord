@@ -1,4 +1,4 @@
-﻿using BKCordServer.ServerModule.Domain.Enums;
+﻿using BKCordServer.ServerModule.Contracts;
 using BKCordServer.ServerModule.Services.Interfaces;
 
 namespace BKCordServer.ServerModule.Commons.Helpers;

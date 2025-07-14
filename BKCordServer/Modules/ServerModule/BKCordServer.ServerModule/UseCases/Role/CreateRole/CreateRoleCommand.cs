@@ -1,4 +1,4 @@
-﻿using BKCordServer.ServerModule.Domain.Enums;
+﻿using BKCordServer.ServerModule.Contracts;
 using MediatR;
 
 namespace BKCordServer.ServerModule.UseCases.Role.CreateRole;

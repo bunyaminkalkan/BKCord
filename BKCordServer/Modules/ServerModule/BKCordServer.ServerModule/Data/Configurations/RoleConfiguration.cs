@@ -1,6 +1,6 @@
 ﻿using BKCordServer.ServerModule.Constants;
+using BKCordServer.ServerModule.Contracts;
 using BKCordServer.ServerModule.Domain.Entities;
-using BKCordServer.ServerModule.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,4 +1,4 @@
-﻿namespace BKCordServer.ServerModule.Domain.Enums;
+﻿namespace BKCordServer.ServerModule.Contracts;
 public enum RolePermission
 {
     ManageMessages = 1,
@@ -8,8 +8,7 @@ public enum RolePermission
 
     ManageRoles = 200,
 
-    CreateChannels = 300,
-    ManageChannels = 301,
+    ManageChannels = 300,
 
     ManageServer = 400,
 

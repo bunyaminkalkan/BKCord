@@ -1,4 +1,4 @@
-﻿using BKCordServer.ServerModule.Domain.Enums;
+﻿using BKCordServer.ServerModule.Contracts;
 using FluentValidation;
 using System.Text.RegularExpressions;
 
