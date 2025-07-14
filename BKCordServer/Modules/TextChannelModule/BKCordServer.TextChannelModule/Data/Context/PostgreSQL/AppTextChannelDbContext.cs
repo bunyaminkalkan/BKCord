@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BKCordServer.TextChannelModule.Data.Context.PostgreSQL;
 public class AppTextChannelDbContext : DbContext
 {
-    public AppTextChannelDbContext(DbContextOptions options) : base(options)
+    public AppTextChannelDbContext(DbContextOptions<AppTextChannelDbContext> options) : base(options)
     {
     }
 

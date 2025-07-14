@@ -63,8 +63,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference(options =>
     {
-        options.WithTitle("My API")
-              .WithTheme(ScalarTheme.Default)
+        options.WithTitle("BKCord API")
+              .WithTheme(ScalarTheme.BluePlanet)
               .WithModels(false);
     });
 }
