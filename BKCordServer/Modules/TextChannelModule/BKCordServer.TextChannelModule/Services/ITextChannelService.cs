@@ -7,5 +7,7 @@ public interface ITextChannelService
 {
     Task<TextChannel> CreateAsync(Guid createdUserId, CreateTextChannelCommand request);
     Task<TextChannel> UpdateAsync(Guid updatedUserId, UpdateTextChannelCommand request, TextChannel textChannel);
+    Task DeleteAsync(Guid deletedUserId, TextChannel textChannel);
     Task<TextChannel> GetByIdAsync(Guid textChannelId);
+    Task<IEnumerable<TextChannel>> GetAllByServerIdAsync(Guid serverId);
 }

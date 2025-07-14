@@ -39,6 +39,15 @@ public class TextChannelService : ITextChannelService
         return textChannel;
     }
 
+    public async Task DeleteAsync(Guid deletedUserId, TextChannel textChannel)
+    {
+        textChannel.IsDeleted = true;
+        textChannel.DeletedBy = deletedUserId;
+        textChannel.DeletedAt = DateTime.UtcNow;
+
+        await _textChannelRepository.UpdateAsync(textChannel);
+    }
+
     public async Task<TextChannel> GetByIdAsync(Guid textChannelId)
     {
         var textChannel = await _textChannelRepository.GetAsQueryable().FirstOrDefaultAsync(tc => tc.Id == textChannelId);
@@ -48,4 +57,7 @@ public class TextChannelService : ITextChannelService
 
         return textChannel;
     }
+
+    public async Task<IEnumerable<TextChannel>> GetAllByServerIdAsync(Guid serverId) =>
+        await _textChannelRepository.GetAsQueryable().Where(tc => tc.ServerId == serverId).ToListAsync();
 }

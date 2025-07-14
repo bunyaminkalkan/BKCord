@@ -1,4 +1,6 @@
 ﻿using BKCordServer.TextChannelModule.UseCases.TextChannel.CreateTextChannel;
+using BKCordServer.TextChannelModule.UseCases.TextChannel.DeleteTextChannel;
+using BKCordServer.TextChannelModule.UseCases.TextChannel.GetAllTextChannels;
 using BKCordServer.TextChannelModule.UseCases.TextChannel.UpdateTextChannel;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +29,20 @@ public class TextChannelController : ControllerBase
 
     [HttpPut]
     public async Task<IActionResult> UpdateTextChannel([FromBody] UpdateTextChannelCommand request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+    [HttpDelete("{TextChannelId}")]
+    public async Task<IActionResult> DeleteTextChannel([FromRoute] DeleteTextChannelCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllTextChannels([FromQuery] GetAllTextChannelsQuery request)
     {
         var response = await _mediator.Send(request);
         return Ok(response);
