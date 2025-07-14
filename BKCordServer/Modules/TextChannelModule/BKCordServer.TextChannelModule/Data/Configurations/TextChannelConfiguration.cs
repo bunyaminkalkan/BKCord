@@ -20,17 +20,20 @@ public class TextChannelConfiguration : IEntityTypeConfiguration<TextChannel>
         builder.Property(tc => tc.ServerId)
             .IsRequired();
 
-        builder.Property(tc => tc.CreatedBy)
+        builder.Property(tc => tc.MessageCount)
             .IsRequired();
 
-        builder.Property(tc => tc.MessageCount)
+        builder.Property(tc => tc.CreatedBy)
             .IsRequired();
 
         builder.Property(tc => tc.CreatedAt)
             .IsRequired();
 
+        builder.Property(tc => tc.UpdatedBy)
+            .IsRequired(false);
+
         builder.Property(tc => tc.UpdatedAt)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(tc => tc.IsDeleted)
             .IsRequired();
