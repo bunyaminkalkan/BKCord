@@ -44,4 +44,7 @@ public class ServerMemberService : IServerMemberService
         if (!isMember)
             throw new BadRequestException("Invalid server id or user id");
     }
+
+    public async Task<bool> IsUserMemberTheServer(Guid userId, Guid serverId) =>
+        await _serverMemberRepository.ExistAsync(userId, serverId);
 }
