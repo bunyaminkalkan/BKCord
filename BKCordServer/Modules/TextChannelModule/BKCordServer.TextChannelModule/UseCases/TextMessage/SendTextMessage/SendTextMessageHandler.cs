@@ -27,6 +27,6 @@ public class SendTextMessageHandler : IRequestHandler<SendTextMessageCommand, Te
 
         var userInf = await _mediator.Send(new GetUserInfQuery(request.UserId));
 
-        return new TextMessageDTO(textMessage.Id, userInf, textMessage.Content, textMessage.CreatedAt != (textMessage.UpdatedAt ?? textMessage.CreatedAt));
+        return new TextMessageDTO(userInf, textMessage, textMessage.CreatedAt != (textMessage.UpdatedAt ?? textMessage.CreatedAt));
     }
 }

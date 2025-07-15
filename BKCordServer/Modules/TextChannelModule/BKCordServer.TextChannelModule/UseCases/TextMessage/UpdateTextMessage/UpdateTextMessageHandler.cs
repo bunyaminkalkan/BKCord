@@ -36,7 +36,7 @@ public class UpdateTextMessageHandler : IRequestHandler<UpdateTextMessageCommand
 
         var userInf = await _mediator.Send(new GetUserInfQuery(userId));
 
-        var updatedMessage = new TextMessageDTO(textMessage.Id, userInf, textMessage.Content, true);
+        var updatedMessage = new TextMessageDTO(userInf, textMessage, true);
 
         await _chatHubContext.Clients.Group(textMessage.ChannelId.ToString())
             .SendAsync("MessageUpdated", updatedMessage);

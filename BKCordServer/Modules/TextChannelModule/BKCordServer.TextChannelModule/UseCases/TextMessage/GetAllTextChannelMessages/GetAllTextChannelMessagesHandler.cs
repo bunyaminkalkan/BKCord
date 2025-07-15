@@ -33,7 +33,7 @@ public class GetAllTextChannelMessagesHandler : IRequestHandler<GetAllTextChanne
         if (!isUserMemberTheServer)
             throw new BadRequestException("User has not joined the server");
 
-        var textMessages = await _textMessageService.GetAllByChannelIdAsync(textChannel.Id);
+        var textMessages = await _textMessageService.GetMessagesByChannelIdAsync(textChannel.Id, request.Before, request.PageSize);
 
         var userIds = textMessages.Select(msg => msg.SenderUserId).Distinct().ToList();
 
@@ -43,9 +43,8 @@ public class GetAllTextChannelMessagesHandler : IRequestHandler<GetAllTextChanne
 
         var textMessageDTOs = textMessages.Select(textMessage =>
             new TextMessageDTO(
-                textMessage.Id,
                 userInfoDict[textMessage.SenderUserId],
-                textMessage.Content,
+                textMessage,
                 textMessage.CreatedAt != (textMessage.UpdatedAt ?? textMessage.CreatedAt))
             )
             .ToList();

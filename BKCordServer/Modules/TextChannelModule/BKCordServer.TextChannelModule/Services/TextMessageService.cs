@@ -45,8 +45,21 @@ public class TextMessageService : ITextMessageService
         await _textMessageRepository.UpdateAsync(textMessage);
     }
 
-    public async Task<IEnumerable<TextMessage>> GetAllByChannelIdAsync(Guid textChannelId) =>
-        await _textMessageRepository.GetAsQueryable().Where(tm => tm.ChannelId == textChannelId).ToListAsync();
+    public async Task<IEnumerable<TextMessage>> GetMessagesByChannelIdAsync(Guid channelId, DateTime? before, int pageSize)
+    {
+        var query = _textMessageRepository.GetAsQueryable().Where(m => m.ChannelId == channelId);
+
+        if (before.HasValue)
+        {
+            query = query.Where(m => m.CreatedAt < before.Value);
+        }
+
+        return await query
+            .OrderByDescending(m => m.CreatedAt)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
 
     public async Task<TextMessage> GetByIdAsync(Guid textMessageId)
     {

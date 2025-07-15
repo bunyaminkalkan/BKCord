@@ -8,5 +8,5 @@ public interface ITextMessageService
     Task UpdateAsync(string newContent, TextMessage textMessage);
     Task DeleteAsync(Guid userId, TextMessage textMessage);
     Task<TextMessage> GetByIdAsync(Guid textMessageId);
-    Task<IEnumerable<TextMessage>> GetAllByChannelIdAsync(Guid textChannelId);
+    Task<IEnumerable<TextMessage>> GetMessagesByChannelIdAsync(Guid channelId, DateTime? before, int pageSize);
 }
