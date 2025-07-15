@@ -1,4 +1,5 @@
 ﻿using BKCordServer.TextChannelModule.DTOs;
+using BKCordServer.TextChannelModule.UseCases.TextMessage.DeleteTextMessage;
 using BKCordServer.TextChannelModule.UseCases.TextMessage.GetAllTextChannelMessages;
 using BKCordServer.TextChannelModule.UseCases.TextMessage.UpdateTextMessage;
 using MediatR;
@@ -23,6 +24,13 @@ public class TextMessageController : ControllerBase
         var command = new UpdateTextMessageCommand(TextMessageId, request.NewContent);
         var response = await _mediator.Send(command);
         return Ok(response);
+    }
+
+    [HttpDelete("{TextMessageId}")]
+    public async Task<IActionResult> DeleteTextMessage([FromRoute] DeleteTextMessageCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok();
     }
 
     [HttpGet]

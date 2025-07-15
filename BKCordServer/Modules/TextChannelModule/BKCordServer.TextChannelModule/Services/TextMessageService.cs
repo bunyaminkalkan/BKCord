@@ -36,6 +36,15 @@ public class TextMessageService : ITextMessageService
         await _textMessageRepository.UpdateAsync(textMessage);
     }
 
+    public async Task DeleteAsync(Guid userId, TextMessage textMessage)
+    {
+        textMessage.IsDeleted = true;
+        textMessage.DeletedBy = userId;
+        textMessage.DeletedAt = DateTime.UtcNow;
+
+        await _textMessageRepository.UpdateAsync(textMessage);
+    }
+
     public async Task<IEnumerable<TextMessage>> GetAllByChannelIdAsync(Guid textChannelId) =>
         await _textMessageRepository.GetAsQueryable().Where(tm => tm.ChannelId == textChannelId).ToListAsync();
 

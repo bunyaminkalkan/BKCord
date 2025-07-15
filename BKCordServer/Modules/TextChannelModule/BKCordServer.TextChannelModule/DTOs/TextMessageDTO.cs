@@ -3,7 +3,7 @@
 namespace BKCordServer.TextChannelModule.DTOs;
 public class TextMessageDTO
 {
-    public Guid TextMessageId;
+    public Guid TextMessageId { get; set; }
     public UserInfDTO User { get; set; }
     public string Content { get; set; }
     public bool IsUpdated { get; set; }
