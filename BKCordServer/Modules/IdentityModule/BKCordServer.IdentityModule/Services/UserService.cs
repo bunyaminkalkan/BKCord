@@ -23,6 +23,16 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task<User> GetByIdAsync(Guid userId)
+    {
+        var user = await _userRepository.GetByIdAsync(userId);
+
+        if (user == null)
+            throw new NotFoundException($"User was not found with {userId} user id");
+
+        return user;
+    }
+
     public async Task<IEnumerable<User>> GetAllByIdsAsync(IEnumerable<Guid> userIds) =>
         await _userRepository.GetAllByIdsAsync(userIds);
 }

@@ -32,9 +32,9 @@ public class UserRepository : IUserRepository
         return user is null ? null : user;
     }
 
-    public async Task<User?> GetByIdAsync(string id)
+    public async Task<User?> GetByIdAsync(Guid id)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByIdAsync(id.ToString());
         return user is null ? null : user;
     }
 

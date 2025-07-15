@@ -35,9 +35,13 @@ public class TextChannelModule : IModule
 
         #region Interfaces
         services.AddScoped<ITextChannelRepository, TextChannelRepository>();
+        services.AddScoped<ITextMessageRepository, TextMessageRepository>();
 
+        services.AddScoped<ITextMessageService, TextMessageService>();
         services.AddScoped<ITextChannelService, TextChannelService>();
         #endregion
+
+        services.AddSignalR();
 
         Console.WriteLine("TextChannel module services registered");
     }

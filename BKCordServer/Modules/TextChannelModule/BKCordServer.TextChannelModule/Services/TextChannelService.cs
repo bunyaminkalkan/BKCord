@@ -60,4 +60,10 @@ public class TextChannelService : ITextChannelService
 
     public async Task<IEnumerable<TextChannel>> GetAllByServerIdAsync(Guid serverId) =>
         await _textChannelRepository.GetAsQueryable().Where(tc => tc.ServerId == serverId).ToListAsync();
+
+    public async Task IncrementMessageCount(TextChannel textChannel)
+    {
+        textChannel!.MessageCount++;
+        await _textChannelRepository.UpdateAsync(textChannel);
+    }
 }

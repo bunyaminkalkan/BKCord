@@ -34,6 +34,6 @@ public class TextMessageConfiguration : IEntityTypeConfiguration<TextMessage>
         builder.HasOne<TextChannel>()
                .WithMany()
                .HasForeignKey(tm => tm.ChannelId)
-               .OnDelete(DeleteBehavior.Restrict); // Kanal silinirse mesajlar da silinir
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

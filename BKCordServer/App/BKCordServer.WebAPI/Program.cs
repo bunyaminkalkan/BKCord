@@ -54,6 +54,7 @@ builder.Services.AddOpenApi(options =>
 
 builder.Services.InstallSharedServices(builder.Configuration);
 builder.Services.InstallModules(builder.Configuration);
+builder.Services.AddCustomCors();
 
 var app = builder.Build();
 
@@ -75,10 +76,14 @@ app.UseExceptionMiddleware();
 
 app.UseHttpsRedirection();
 
+app.UseCustomCors();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHubs();
 
 app.Run();

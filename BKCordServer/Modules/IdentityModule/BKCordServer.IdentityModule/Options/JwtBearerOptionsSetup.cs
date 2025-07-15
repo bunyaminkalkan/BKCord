@@ -24,5 +24,22 @@ public class JwtBearerOptionsSetup : IPostConfigureOptions<JwtBearerOptions>
         options.TokenValidationParameters.ValidAudience = _jwtOptions.Audience;
         options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
+
+        //SignalR
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                // SignalR hub path'i için token'ı query string'den al
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chatHub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     }
 }

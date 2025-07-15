@@ -10,6 +10,7 @@
 	<PackageReference Include="FluentValidation" Version="12.0.0" />
 	<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
 	<PackageReference Include="MediatR" Version="12.5.0" />
+	<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6" />
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.Kernel\Shared.Kernel.csproj" />
+    <ProjectReference Include="..\..\IdentityModule\BKCordServer.IdentityModule.Contracts\BKCordServer.IdentityModule.Contracts.csproj" />
     <ProjectReference Include="..\..\ServerModule\BKCordServer.ServerModule.Contracts\BKCordServer.ServerModule.Contracts.csproj" />
   </ItemGroup>
 

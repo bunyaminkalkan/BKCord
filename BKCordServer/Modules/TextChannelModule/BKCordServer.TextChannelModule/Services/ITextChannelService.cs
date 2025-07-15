@@ -10,4 +10,5 @@ public interface ITextChannelService
     Task DeleteAsync(Guid deletedUserId, TextChannel textChannel);
     Task<TextChannel> GetByIdAsync(Guid textChannelId);
     Task<IEnumerable<TextChannel>> GetAllByServerIdAsync(Guid serverId);
+    Task IncrementMessageCount(TextChannel textChannel);
 }

@@ -1,4 +1,5 @@
-﻿using BKCordServer.WebAPI.Middlewares;
+﻿using BKCordServer.TextChannelModule.SignalR;
+using BKCordServer.WebAPI.Middlewares;
 using FluentValidation;
 using Shared.Kernel;
 using Shared.Kernel.DependencyInjection;
@@ -60,5 +61,12 @@ public static class InstallerExtensions
         }
 
         return mvcBuilder;
+    }
+
+    public static WebApplication MapHubs(this WebApplication app)
+    {
+        app.MapHub<ChatHub>("/chatHub");
+
+        return app;
     }
 }
