@@ -2,6 +2,7 @@
 using BKCordServer.TextChannelModule.Repositories;
 using BKCordServer.TextChannelModule.UseCases.TextMessage.SendTextMessage;
 using Microsoft.EntityFrameworkCore;
+using Shared.Kernel.Exceptions;
 
 namespace BKCordServer.TextChannelModule.Services;
 public class TextMessageService : ITextMessageService
@@ -27,6 +28,24 @@ public class TextMessageService : ITextMessageService
         return textMessage;
     }
 
+    public async Task UpdateAsync(string newContent, TextMessage textMessage)
+    {
+        textMessage.Content = newContent;
+        textMessage.UpdatedAt = DateTime.UtcNow;
+
+        await _textMessageRepository.UpdateAsync(textMessage);
+    }
+
     public async Task<IEnumerable<TextMessage>> GetAllByChannelIdAsync(Guid textChannelId) =>
         await _textMessageRepository.GetAsQueryable().Where(tm => tm.ChannelId == textChannelId).ToListAsync();
+
+    public async Task<TextMessage> GetByIdAsync(Guid textMessageId)
+    {
+        var textMessage = await _textMessageRepository.GetAsQueryable().FirstOrDefaultAsync(tm => tm.Id == textMessageId);
+
+        if (textMessage == null)
+            throw new NotFoundException($"Message cannot be find with {textMessageId} text message id");
+
+        return textMessage;
+    }
 }

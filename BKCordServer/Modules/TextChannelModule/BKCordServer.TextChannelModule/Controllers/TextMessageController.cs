@@ -1,4 +1,6 @@
-﻿using BKCordServer.TextChannelModule.UseCases.TextMessage.GetAllTextChannelMessages;
+﻿using BKCordServer.TextChannelModule.DTOs;
+using BKCordServer.TextChannelModule.UseCases.TextMessage.GetAllTextChannelMessages;
+using BKCordServer.TextChannelModule.UseCases.TextMessage.UpdateTextMessage;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +15,14 @@ public class TextMessageController : ControllerBase
     public TextMessageController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpPut("{TextMessageId}")]
+    public async Task<IActionResult> UpdateTextMessage([FromRoute] Guid TextMessageId, UpdateTextMessageRequest request)
+    {
+        var command = new UpdateTextMessageCommand(TextMessageId, request.NewContent);
+        var response = await _mediator.Send(command);
+        return Ok(response);
     }
 
     [HttpGet]

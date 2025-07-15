@@ -42,7 +42,12 @@ public class GetAllTextChannelMessagesHandler : IRequestHandler<GetAllTextChanne
         var userInfoDict = userInfos.ToDictionary(user => user.Id, user => user);
 
         var textMessageDTOs = textMessages.Select(textMessage =>
-            new TextMessageDTO(userInfoDict[textMessage.SenderUserId], textMessage.Content))
+            new TextMessageDTO(
+                textMessage.Id,
+                userInfoDict[textMessage.SenderUserId],
+                textMessage.Content,
+                textMessage.CreatedAt != (textMessage.UpdatedAt ?? textMessage.CreatedAt))
+            )
             .ToList();
 
         return textMessageDTOs;

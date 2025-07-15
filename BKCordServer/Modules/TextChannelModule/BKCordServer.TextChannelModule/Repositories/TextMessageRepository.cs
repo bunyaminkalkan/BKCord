@@ -17,5 +17,11 @@ public class TextMessageRepository : ITextMessageRepository
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task UpdateAsync(TextMessage textMessage)
+    {
+        _dbContext.TextMessages.Update(textMessage);
+        await _dbContext.SaveChangesAsync();
+    }
+
     public IQueryable<TextMessage> GetAsQueryable() => _dbContext.TextMessages.AsQueryable();
 }
