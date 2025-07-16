@@ -39,10 +39,9 @@ public class DeleteTextMessageHandler : IRequestHandler<DeleteTextMessageCommand
         var serverId = textChannel.ServerId;
 
         var isOwnMessage = textMessage.SenderUserId == userId;
-        var isModerator = await _mediator.Send(new IsUserHavePermissionQuery(userId, serverId, RolePermission.ManageMessages));
 
-        if (!isOwnMessage && !isModerator)
-            throw new ForbiddenException("You cannot delete other users' messages.");
+        if (!isOwnMessage)
+            await _mediator.Send(new ValidateUserHavePermissionQuery(userId, serverId, RolePermission.ManageMessages));
 
         textMessage.DeletedBy = userId;
 

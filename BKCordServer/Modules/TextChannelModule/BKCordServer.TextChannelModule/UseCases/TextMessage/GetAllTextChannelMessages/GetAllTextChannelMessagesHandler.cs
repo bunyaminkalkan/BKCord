@@ -31,10 +31,7 @@ public class GetAllTextChannelMessagesHandler : IRequestHandler<GetAllTextChanne
         var textChannel = await _dbContext.TextChannels.FirstOrDefaultAsync(tc => tc.Id == request.TextChannelId)
             ?? throw new NotFoundException($"Text Channel cannot find with {request.TextChannelId} text channel id");
 
-        var isUserMemberTheServer = await _mediator.Send(new IsUserMemberTheServerQuery(userId, textChannel.ServerId));
-
-        if (!isUserMemberTheServer)
-            throw new BadRequestException("User has not joined the server");
+        await _mediator.Send(new ValidateUserMemberTheServerQuery(userId, textChannel.ServerId));
 
         var textMessagesQuery = _dbContext.TextMessages.Where(m => m.ChannelId == textChannel.Id);
 

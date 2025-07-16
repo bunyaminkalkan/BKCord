@@ -26,10 +26,7 @@ public class UpdateTextChannelHandler : IRequestHandler<UpdateTextChannelCommand
 
         var userId = _httpContextService.GetUserId();
 
-        var isUserHavePermission = await _mediator.Send(new IsUserHavePermissionQuery(userId, textChannel.ServerId, RolePermission.ManageChannels));
-
-        if (!isUserHavePermission)
-            throw new ForbiddenException("User doesn't have permission");
+        await _mediator.Send(new ValidateUserHavePermissionQuery(userId, textChannel.ServerId, RolePermission.ManageChannels));
 
         textChannel.UpdatedBy = userId;
         textChannel.UpdatedAt = DateTime.UtcNow;

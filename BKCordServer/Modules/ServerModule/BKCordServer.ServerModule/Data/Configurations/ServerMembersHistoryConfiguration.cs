@@ -12,27 +12,22 @@ public sealed class ServerMembersHistoryConfiguration : IEntityTypeConfiguration
         builder.ToTable(Tables.ServerMembersHistory, Tables.ServerSchema);
         builder.HasKey(smh => smh.Id);
 
-        builder.Property(smh => smh.UserId)
-            .IsRequired();
-
-        builder.Property(smh => smh.ServerId)
-            .IsRequired();
-
-        builder.Property(smh => smh.JoinedAt)
-            .IsRequired();
-
-        builder.Property(smh => smh.LeftAt)
-            .IsRequired();
+        builder.Property(smh => smh.UserId).IsRequired();
+        builder.Property(smh => smh.ServerId).IsRequired();
 
         builder.Property(smh => smh.RemovedReason)
             .HasMaxLength(500)
             .IsRequired(false);
 
         builder.Property(smh => smh.RemovedByUserId)
-            .HasMaxLength(450)
             .IsRequired(false);
 
-        builder.Property(smh => smh.WasBanned)
-            .IsRequired();
+        builder.Property(smh => smh.WasBanned).IsRequired();
+
+        builder.Property(smh => smh.CreatedAt).IsRequired();
+        builder.Property(smh => smh.UpdatedAt).IsRequired(false);
+        builder.Property(smh => smh.IsDeleted).IsRequired();
+        builder.Property(smh => smh.DeletedAt).IsRequired(false);
     }
 }
+

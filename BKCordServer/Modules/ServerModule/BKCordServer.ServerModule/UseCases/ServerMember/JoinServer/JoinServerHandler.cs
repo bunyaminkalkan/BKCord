@@ -1,34 +1,44 @@
-﻿using BKCordServer.ServerModule.Services.Interfaces;
+﻿using BKCordServer.ServerModule.Data.Context.PostgreSQL;
+using BKCordServer.ServerModule.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Shared.Kernel.Exceptions;
 using Shared.Kernel.Services;
 
 namespace BKCordServer.ServerModule.UseCases.ServerMember.JoinServer;
 public class JoinServerHandler : IRequestHandler<JoinServerCommand>
 {
-    private readonly IServerMemberService _serverMemberService;
-    private readonly IServerMembersHistoryService _serverMembersHistoryService;
-    private readonly IServerService _serverService;
+    private readonly AppServerDbContext _dbContext;
     private readonly IHttpContextService _httpContextService;
 
-    public JoinServerHandler(
-        IServerMemberService serverMemberService,
-        IServerMembersHistoryService serverMembersHistoryService,
-        IServerService serverService,
-        IHttpContextService httpContextService
-        )
+    public JoinServerHandler(AppServerDbContext dbContext, IHttpContextService httpContextService)
     {
-        _serverMemberService = serverMemberService;
-        _serverMembersHistoryService = serverMembersHistoryService;
-        _serverService = serverService;
+        _dbContext = dbContext;
         _httpContextService = httpContextService;
     }
 
     public async Task Handle(JoinServerCommand request, CancellationToken cancellationToken)
     {
         var userId = _httpContextService.GetUserId();
-        var serverId = await _serverService.GetServerIdByInviteCodeAsync(request.InviteCode);
 
-        await _serverMemberService.JoinServerAsync(userId, serverId);
-        await _serverMembersHistoryService.JoinServerAsync(userId, serverId);
+        var serverId = (await _dbContext.Servers.FirstOrDefaultAsync(s => s.InviteCode == request.InviteCode))?.Id
+            ?? throw new NotFoundException($"Server cannot be find with {request.InviteCode} invite code");
+
+        var serverMember = new Domain.Entities.ServerMember
+        {
+            UserId = userId,
+            ServerId = serverId
+        };
+
+        var serverMembersHistory = new ServerMembersHistory
+        {
+            UserId = userId,
+            ServerId = serverId
+        };
+
+        _dbContext.ServerMembers.Add(serverMember);
+        _dbContext.ServerMembersHistory.Add(serverMembersHistory);
+
+        await _dbContext.SaveChangesAsync();
     }
 }

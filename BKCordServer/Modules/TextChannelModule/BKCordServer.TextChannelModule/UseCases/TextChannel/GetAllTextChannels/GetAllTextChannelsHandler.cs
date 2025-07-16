@@ -2,7 +2,6 @@
 using BKCordServer.TextChannelModule.Data.Context.PostgreSQL;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Kernel.Exceptions;
 using Shared.Kernel.Services;
 
 namespace BKCordServer.TextChannelModule.UseCases.TextChannel.GetAllTextChannels;
@@ -23,10 +22,7 @@ public class GetAllTextChannelsHandler : IRequestHandler<GetAllTextChannelsQuery
     {
         var userId = _httpContextService.GetUserId();
 
-        var isUserMemberTheServer = await _mediator.Send(new IsUserMemberTheServerQuery(userId, request.ServerId));
-
-        if (!isUserMemberTheServer)
-            throw new BadRequestException("User has not joined the server");
+        await _mediator.Send(new ValidateUserMemberTheServerQuery(userId, request.ServerId));
 
         return await _dbContext.TextChannels.Where(tc => tc.ServerId == request.ServerId).ToListAsync();
     }

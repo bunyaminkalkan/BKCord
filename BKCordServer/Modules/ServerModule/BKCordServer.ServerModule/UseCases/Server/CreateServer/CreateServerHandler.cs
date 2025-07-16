@@ -1,5 +1,6 @@
-﻿using BKCordServer.ServerModule.DTOs;
-using BKCordServer.ServerModule.Services.Interfaces;
+﻿using BKCordServer.ServerModule.Data.Context.PostgreSQL;
+using BKCordServer.ServerModule.Domain.Entities;
+using BKCordServer.ServerModule.DTOs;
 using MediatR;
 using Shared.Kernel.Images;
 using Shared.Kernel.Services;
@@ -7,25 +8,15 @@ using Shared.Kernel.Services;
 namespace BKCordServer.ServerModule.UseCases.Server.CreateServer;
 public class CreateServerHandler : IRequestHandler<CreateServerCommand, ServerInfDTO>
 {
-    private readonly IServerService _serverService;
+    private readonly AppServerDbContext _dbContext;
     private readonly IImageService _imageService;
     private readonly IHttpContextService _httpContextService;
-    private readonly IServerMemberService _serverMemberService;
-    private readonly IServerMembersHistoryService _serverMembersHistoryService;
 
-    public CreateServerHandler(
-        IServerService serverService,
-        IImageService imageService,
-        IHttpContextService httpContextService,
-        IServerMemberService serverMemberService,
-        IServerMembersHistoryService serverMembersHistoryService
-        )
+    public CreateServerHandler(AppServerDbContext dbContext, IImageService imageService, IHttpContextService httpContextService)
     {
-        _serverService = serverService;
+        _dbContext = dbContext;
         _imageService = imageService;
         _httpContextService = httpContextService;
-        _serverMemberService = serverMemberService;
-        _serverMembersHistoryService = serverMembersHistoryService;
     }
 
     public async Task<ServerInfDTO> Handle(CreateServerCommand request, CancellationToken cancellationToken)
@@ -34,11 +25,44 @@ public class CreateServerHandler : IRequestHandler<CreateServerCommand, ServerIn
 
         var logoUrl = await _imageService.UploadSingleImageAsync(request.Logo, "servers");
 
-        var server = await _serverService.CreateAsync(userId, request.Name, logoUrl);
+        var server = new Domain.Entities.Server
+        {
+            OwnerId = userId,
+            Name = request.Name,
+            LogoUrl = logoUrl,
+            InviteCode = GenerateInviteCode(),
+        };
 
-        await _serverMemberService.JoinServerAsync(userId, server.Id);
-        await _serverMembersHistoryService.JoinServerAsync(userId, server.Id);
+        var serverMember = new Domain.Entities.ServerMember
+        {
+            UserId = userId,
+            ServerId = server.Id
+        };
 
+        var serverMembersHistory = new ServerMembersHistory
+        {
+            UserId = userId,
+            ServerId = server.Id
+        };
+
+        _dbContext.Servers.Add(server);
+        _dbContext.ServerMembers.Add(serverMember);
+        _dbContext.ServerMembersHistory.Add(serverMembersHistory);
+
+        await _dbContext.SaveChangesAsync();
         return new ServerInfDTO(server);
+    }
+
+    private string GenerateInviteCode(int length = 15)
+    {
+        var guid = Guid.NewGuid();
+        var base64 = Convert.ToBase64String(guid.ToByteArray());
+
+        // Base64 string'i URL-safe hale getir (isteğe bağlı)
+        var code = base64.Replace("+", "")
+                         .Replace("/", "")
+                         .Replace("=", "");
+
+        return code.Substring(0, Math.Min(length, code.Length));
     }
 }

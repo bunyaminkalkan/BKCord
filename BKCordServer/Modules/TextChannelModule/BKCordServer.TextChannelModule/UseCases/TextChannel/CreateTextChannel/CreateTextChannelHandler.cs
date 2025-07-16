@@ -1,7 +1,6 @@
 ﻿using BKCordServer.ServerModule.Contracts;
 using BKCordServer.TextChannelModule.Data.Context.PostgreSQL;
 using MediatR;
-using Shared.Kernel.Exceptions;
 using Shared.Kernel.Services;
 
 namespace BKCordServer.TextChannelModule.UseCases.TextChannel.CreateTextChannel;
@@ -22,10 +21,7 @@ public class CreateTextChannelHandler : IRequestHandler<CreateTextChannelCommand
     {
         var userId = _httpContextService.GetUserId();
 
-        var isUserHavePermission = await _mediator.Send(new IsUserHavePermissionQuery(userId, request.ServerId, RolePermission.ManageChannels));
-
-        if (!isUserHavePermission)
-            throw new ForbiddenException("User doesn't have permission");
+        await _mediator.Send(new ValidateUserHavePermissionQuery(userId, request.ServerId, RolePermission.ManageChannels));
 
         var textChannel = new Domain.Entities.TextChannel
         {

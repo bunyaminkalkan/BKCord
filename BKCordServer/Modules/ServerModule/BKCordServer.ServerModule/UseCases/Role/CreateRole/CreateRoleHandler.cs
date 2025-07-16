@@ -1,20 +1,21 @@
 ﻿using BKCordServer.ServerModule.Commons.Helpers;
 using BKCordServer.ServerModule.Contracts;
-using BKCordServer.ServerModule.Services.Interfaces;
+using BKCordServer.ServerModule.Data.Context.PostgreSQL;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared.Kernel.Exceptions;
 using Shared.Kernel.Services;
 
 namespace BKCordServer.ServerModule.UseCases.Role.CreateRole;
 public class CreateRoleHandler : IRequestHandler<CreateRoleCommand, Domain.Entities.Role>
 {
-    private readonly IRoleService _roleService;
+    private readonly AppServerDbContext _dbContext;
     private readonly IHttpContextService _httpContextService;
-    private readonly IPermissionHelperService _permissionHelperService;
+    private readonly IServerAuthorizationService _permissionHelperService;
 
-    public CreateRoleHandler(IRoleService roleService, IHttpContextService httpContextService, IPermissionHelperService permissionHelperService)
+    public CreateRoleHandler(AppServerDbContext dbContext, IHttpContextService httpContextService, IServerAuthorizationService permissionHelperService)
     {
-        _roleService = roleService;
+        _dbContext = dbContext;
         _httpContextService = httpContextService;
         _permissionHelperService = permissionHelperService;
     }
@@ -23,14 +24,24 @@ public class CreateRoleHandler : IRequestHandler<CreateRoleCommand, Domain.Entit
     {
         var userId = _httpContextService.GetUserId();
 
-        var isHavePermission = await _permissionHelperService.IsUserHavePermissionByUserIdAndServerId(userId, request.ServerId, RolePermission.ManageRoles);
+        await _permissionHelperService.ValidateUserHavePermissionByUserIdAndServerId(userId, request.ServerId, RolePermission.ManageRoles);
 
-        if (!isHavePermission)
-            throw new ForbiddenException("You don't have manage roles permission");
+        var isRoleExist = await _dbContext.Roles.AnyAsync(r => r.ServerId == request.ServerId && r.Name == request.Name);
 
-        await _roleService.ValidateRoleExist(request.ServerId, request.Name);
+        if (isRoleExist)
+            throw new BadRequestException($"Given '{request.Name}' role already exist");
 
-        var role = await _roleService.CreateAsync(request);
+        var role = new Domain.Entities.Role
+        {
+            ServerId = request.ServerId,
+            Name = request.Name,
+            Color = request.Color,
+            Hierarchy = request.Hierarchy,
+            RolePermissions = request.RolePermissions
+        };
+
+        _dbContext.Roles.Add(role);
+        await _dbContext.SaveChangesAsync();
 
         return role;
     }

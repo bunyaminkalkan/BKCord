@@ -13,15 +13,14 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
         builder.ToTable(Tables.Roles, Tables.ServerSchema);
         builder.HasKey(r => r.Id);
 
-        builder.Property(r => r.ServerId)
-            .IsRequired();
+        builder.Property(r => r.ServerId).IsRequired();
 
         builder.Property(r => r.Name)
             .IsRequired()
             .HasMaxLength(100);
 
         builder.Property(r => r.Color)
-            .HasMaxLength(7); // Hex color code (#FFFFFF)
+            .HasMaxLength(7);
 
         builder.Property(r => r.Hierarchy)
             .IsRequired();
@@ -33,9 +32,15 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
             .HasConversion(
                 v => string.Join(',', v.Select(p => p.ToString())),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                     .Select(s => Enum.Parse<RolePermission>(s.Trim()))
-                     .ToList()
+                      .Select(s => Enum.Parse<RolePermission>(s.Trim()))
+                      .ToList()
             )
             .HasMaxLength(2000);
+
+        builder.Property(r => r.CreatedAt).IsRequired();
+        builder.Property(r => r.UpdatedAt).IsRequired(false);
+        builder.Property(r => r.IsDeleted).IsRequired();
+        builder.Property(r => r.DeletedAt).IsRequired(false);
     }
 }
+

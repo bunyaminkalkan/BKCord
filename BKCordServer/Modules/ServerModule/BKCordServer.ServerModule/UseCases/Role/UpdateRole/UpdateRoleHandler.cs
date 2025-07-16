@@ -1,20 +1,21 @@
 ﻿using BKCordServer.ServerModule.Commons.Helpers;
 using BKCordServer.ServerModule.Contracts;
-using BKCordServer.ServerModule.Services.Interfaces;
+using BKCordServer.ServerModule.Data.Context.PostgreSQL;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared.Kernel.Exceptions;
 using Shared.Kernel.Services;
 
 namespace BKCordServer.ServerModule.UseCases.Role.UpdateRole;
 public sealed class UpdateRoleHandler : IRequestHandler<UpdateRoleCommand, Domain.Entities.Role>
 {
-    private readonly IRoleService _roleService;
+    private readonly AppServerDbContext _dbContext;
     private readonly IHttpContextService _httpContextService;
-    private readonly IPermissionHelperService _permissionHelperService;
+    private readonly IServerAuthorizationService _permissionHelperService;
 
-    public UpdateRoleHandler(IRoleService roleService, IHttpContextService httpContextService, IPermissionHelperService permissionHelperService)
+    public UpdateRoleHandler(AppServerDbContext dbContext, IHttpContextService httpContextService, IServerAuthorizationService permissionHelperService)
     {
-        _roleService = roleService;
+        _dbContext = dbContext;
         _httpContextService = httpContextService;
         _permissionHelperService = permissionHelperService;
     }
@@ -23,12 +24,18 @@ public sealed class UpdateRoleHandler : IRequestHandler<UpdateRoleCommand, Domai
     {
         var userId = _httpContextService.GetUserId();
 
-        var isHavePermission = await _permissionHelperService.IsUserHavePermissionByUserIdAndRoleId(userId, request.RoleId, RolePermission.ManageRoles);
+        var role = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Id == request.RoleId)
+            ?? throw new NotFoundException($"Role cannot be find with {request.RoleId} role id");
 
-        if (!isHavePermission)
-            throw new ForbiddenException("You don't have manage roles permission");
+        await _permissionHelperService.ValidateUserHavePermissionByUserIdAndServerId(userId, role.ServerId, RolePermission.ManageRoles);
 
-        var role = await _roleService.UpdateAsync(request);
+        role.Name = request.Name;
+        role.Color = request.Color;
+        role.Hierarchy = request.Hierarchy;
+        role.RolePermissions = request.RolePermissions;
+
+        _dbContext.Roles.Update(role);
+        await _dbContext.SaveChangesAsync();
 
         return role;
     }

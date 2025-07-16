@@ -1,26 +1,24 @@
 ﻿using BKCordServer.ServerModule.Commons.Helpers;
 using BKCordServer.ServerModule.Contracts;
-using BKCordServer.ServerModule.Services.Interfaces;
+using BKCordServer.ServerModule.Data.Context.PostgreSQL;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared.Kernel.Exceptions;
 using Shared.Kernel.Services;
 
 namespace BKCordServer.ServerModule.UseCases.Role.DeleteRole;
 public sealed class DeleteRoleHandler : IRequestHandler<DeleteRoleCommand>
 {
-    private readonly IRoleService _roleService;
-    private readonly IRoleMemberService _roleMemberService;
+    private readonly AppServerDbContext _dbContext;
     private readonly IHttpContextService _httpContextService;
-    private readonly IPermissionHelperService _permissionHelperService;
+    private readonly IServerAuthorizationService _permissionHelperService;
 
     public DeleteRoleHandler(
-        IRoleService roleService,
-        IRoleMemberService roleMemberService,
+        AppServerDbContext dbContext,
         IHttpContextService httpContextService,
-        IPermissionHelperService permissionHelperService)
+        IServerAuthorizationService permissionHelperService)
     {
-        _roleService = roleService;
-        _roleMemberService = roleMemberService;
+        _dbContext = dbContext;
         _httpContextService = httpContextService;
         _permissionHelperService = permissionHelperService;
     }
@@ -29,12 +27,16 @@ public sealed class DeleteRoleHandler : IRequestHandler<DeleteRoleCommand>
     {
         var userId = _httpContextService.GetUserId();
 
-        var isHavePermission = await _permissionHelperService.IsUserHavePermissionByUserIdAndRoleId(userId, request.RoleId, RolePermission.ManageRoles);
+        var role = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Id == request.RoleId)
+            ?? throw new NotFoundException($"Role cannot be find with {request.RoleId} role id");
 
-        if (!isHavePermission)
-            throw new ForbiddenException("You don't have manage roles permission");
+        await _permissionHelperService.ValidateUserHavePermissionByUserIdAndServerId(userId, role.ServerId, RolePermission.ManageRoles);
 
-        await _roleMemberService.DeleteAllMembersAsync(request.RoleId);
-        await _roleService.DeleteAsync(request);
+        var roleMembers = await _dbContext.RoleMembers.Where(rm => rm.RoleId == request.RoleId).ToListAsync();
+
+        _dbContext.Roles.Remove(role);
+        _dbContext.RoleMembers.RemoveRange(roleMembers);
+
+        await _dbContext.SaveChangesAsync();
     }
 }

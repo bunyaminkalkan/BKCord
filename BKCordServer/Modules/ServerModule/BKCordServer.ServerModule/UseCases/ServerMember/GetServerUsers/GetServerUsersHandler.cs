@@ -1,32 +1,41 @@
 ﻿using BKCordServer.IdentityModule.Contracts;
+using BKCordServer.ServerModule.Commons.Helpers;
+using BKCordServer.ServerModule.Data.Context.PostgreSQL;
 using BKCordServer.ServerModule.DTOs;
-using BKCordServer.ServerModule.Services.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Shared.Kernel.Services;
 
 namespace BKCordServer.ServerModule.UseCases.ServerMember.GetServerUsers;
 public sealed class GetServerUsersHandler : IRequestHandler<GetServerUsersQuery, IEnumerable<RoleBasedServerUsersDTO>>
 {
-    private readonly IRoleService _roleService;
-    private readonly IRoleMemberService _roleMemberService;
+    private readonly AppServerDbContext _dbContext;
+    private readonly IHttpContextService _httpContextService;
     private readonly IMediator _mediator;
+    private readonly IServerAuthorizationService _serverAuthorizationService;
 
-    public GetServerUsersHandler(IRoleService roleService, IRoleMemberService roleMemberService, IMediator mediator)
+    public GetServerUsersHandler(AppServerDbContext dbContext, IHttpContextService httpContextService, IMediator mediator, IServerAuthorizationService serverAuthorizationService)
     {
-        _roleService = roleService;
-        _roleMemberService = roleMemberService;
+        _dbContext = dbContext;
+        _httpContextService = httpContextService;
         _mediator = mediator;
+        _serverAuthorizationService = serverAuthorizationService;
     }
 
     public async Task<IEnumerable<RoleBasedServerUsersDTO>> Handle(GetServerUsersQuery request, CancellationToken cancellationToken)
     {
+        var userId = _httpContextService.GetUserId();
+
+        await _serverAuthorizationService.ValidateUserMemberTheServerByUserIdAndServerId(userId, request.ServerId);
+
         var roleBasedServerUsersDTOs = new List<RoleBasedServerUsersDTO>();
         var addedUserIds = new List<Guid>();
 
-        var roles = await _roleService.GetAllByServerIdAsync(request.ServerId);
+        var roles = await _dbContext.Roles.Where(r => r.ServerId == request.ServerId).OrderByDescending(r => r.Hierarchy).ToListAsync();
 
         foreach (var role in roles)
         {
-            var userIds = (await _roleMemberService.GetUserIdsByRoleIdAsync(role.Id))
+            var userIds = (await _dbContext.RoleMembers.Where(rm => rm.RoleId == role.Id).Select(rm => rm.UserId).ToListAsync())
                 .Except(addedUserIds)
                 .ToList();
 

@@ -1,14 +1,11 @@
 ﻿using BKCordServer.ServerModule.Commons.Helpers;
 using BKCordServer.ServerModule.Contracts;
 using BKCordServer.ServerModule.Data.Context.PostgreSQL;
-using BKCordServer.ServerModule.Repositories.Classes;
-using BKCordServer.ServerModule.Repositories.Interfaces;
-using BKCordServer.ServerModule.Services.Classes;
-using BKCordServer.ServerModule.Services.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Kernel.BuildingBlocks;
 using Shared.Kernel.DependencyInjection;
 using Shared.Kernel.Validations;
 
@@ -20,8 +17,11 @@ public class ServerModule : IModule
     public void Install(IServiceCollection services, IConfiguration configuration)
     {
         #region DB
-        services.AddDbContext<AppServerDbContext>(options =>
-        options.UseNpgsql(configuration.GetConnectionString(SectionName)));
+        services.AddDbContext<AppServerDbContext>((sp, options) =>
+        {
+            options.UseNpgsql(configuration.GetConnectionString(SectionName));
+            options.AddInterceptors(sp.GetRequiredService<EntityAuditInterceptor>());
+        });
         #endregion
 
         #region MediatR
@@ -39,19 +39,7 @@ public class ServerModule : IModule
         #endregion
 
         #region Interfaces
-        services.AddScoped<IServerRepository, ServerRepository>();
-        services.AddScoped<IServerMemberRepository, ServerMemberRepository>();
-        services.AddScoped<IServerMembersHistoryRepository, ServerMembersHistoryRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IRoleMemberRepository, RoleMemberRepository>();
-
-        services.AddScoped<IServerService, ServerService>();
-        services.AddScoped<IServerMemberService, ServerMemberService>();
-        services.AddScoped<IServerMembersHistoryService, ServerMembersHistoryService>();
-        services.AddScoped<IRoleService, RoleService>();
-        services.AddScoped<IRoleMemberService, RoleMemberService>();
-
-        services.AddScoped<IPermissionHelperService, PermissionHelperService>();
+        services.AddScoped<IServerAuthorizationService, ServerAuthorizationService>();
         #endregion
 
         Console.WriteLine("Server module services registered");

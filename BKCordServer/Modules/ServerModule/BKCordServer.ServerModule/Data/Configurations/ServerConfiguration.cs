@@ -22,17 +22,13 @@ public sealed class ServerConfiguration : IEntityTypeConfiguration<Server>
         builder.Property(s => s.InviteCode)
             .HasMaxLength(50);
 
-        builder.Property(s => s.Status)
-            .HasConversion<short>()
-            .IsRequired();
-
-        builder.Property(s => s.CreatedAt)
-            .IsRequired();
-
-        builder.Property(s => s.UpdatedAt)
-            .IsRequired();
-
         builder.HasIndex(s => s.InviteCode)
             .IsUnique();
+
+        builder.Property(s => s.CreatedAt).IsRequired();
+        builder.Property(s => s.UpdatedAt).IsRequired(false);
+        builder.Property(s => s.IsDeleted).IsRequired();
+        builder.Property(s => s.DeletedAt).IsRequired(false);
     }
 }
+
