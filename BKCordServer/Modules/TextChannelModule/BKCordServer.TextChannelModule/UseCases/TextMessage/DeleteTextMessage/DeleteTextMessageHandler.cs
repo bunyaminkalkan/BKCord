@@ -44,13 +44,11 @@ public class DeleteTextMessageHandler : IRequestHandler<DeleteTextMessageCommand
         if (!isOwnMessage && !isModerator)
             throw new ForbiddenException("You cannot delete other users' messages.");
 
-        textMessage.IsDeleted = true;
         textMessage.DeletedBy = userId;
-        textMessage.DeletedAt = DateTime.UtcNow;
 
         textChannel.MessageCount--;
 
-        _dbContext.TextMessages.Update(textMessage);
+        _dbContext.TextMessages.Remove(textMessage);
         _dbContext.TextChannels.Update(textChannel);
         await _dbContext.SaveChangesAsync();
 

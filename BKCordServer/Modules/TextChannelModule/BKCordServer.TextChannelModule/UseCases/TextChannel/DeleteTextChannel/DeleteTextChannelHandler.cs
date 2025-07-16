@@ -31,21 +31,17 @@ public class DeleteTextChannelHandler : IRequestHandler<DeleteTextChannelCommand
         if (!isUserHavePermission)
             throw new ForbiddenException("User doesn't have permission");
 
-        textChannel.IsDeleted = true;
-        textChannel.DeletedBy = userId;
-        textChannel.DeletedAt = DateTime.UtcNow;
-
         var textMessages = await _dbContext.TextMessages.Where(m => m.ChannelId == textChannel.Id).ToListAsync();
 
         foreach (var textMessage in textMessages)
         {
-            textMessage.IsDeleted = true;
             textMessage.DeletedBy = userId;
-            textMessage.DeletedAt = DateTime.UtcNow;
         }
 
-        _dbContext.TextChannels.Update(textChannel);
-        _dbContext.TextMessages.UpdateRange(textMessages);
+        textChannel.DeletedBy = userId;
+
+        _dbContext.TextChannels.Remove(textChannel);
+        _dbContext.TextMessages.RemoveRange(textMessages);
 
         await _dbContext.SaveChangesAsync();
     }

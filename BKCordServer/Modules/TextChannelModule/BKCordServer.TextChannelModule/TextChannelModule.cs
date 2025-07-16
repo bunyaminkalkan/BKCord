@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Kernel.BuildingBlocks;
 using Shared.Kernel.DependencyInjection;
 using Shared.Kernel.Validations;
 
@@ -14,8 +15,12 @@ public class TextChannelModule : IModule
     public void Install(IServiceCollection services, IConfiguration configuration)
     {
         #region DB
-        services.AddDbContext<AppTextChannelDbContext>(options =>
-        options.UseNpgsql(configuration.GetConnectionString(SectionName)));
+        services.AddDbContext<AppTextChannelDbContext>((sp, options) =>
+        {
+            options.UseNpgsql(configuration.GetConnectionString(SectionName));
+            options.AddInterceptors(sp.GetRequiredService<EntityAuditInterceptor>());
+        });
+
         #endregion
 
         #region MediatR

@@ -1,5 +1,8 @@
-﻿namespace BKCordServer.TextChannelModule.Domain.Entities;
-public class TextChannel
+﻿using Shared.Kernel.BuildingBlocks;
+
+namespace BKCordServer.TextChannelModule.Domain.Entities;
+
+public class TextChannel : IEntity
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public Guid ServerId { get; set; }
