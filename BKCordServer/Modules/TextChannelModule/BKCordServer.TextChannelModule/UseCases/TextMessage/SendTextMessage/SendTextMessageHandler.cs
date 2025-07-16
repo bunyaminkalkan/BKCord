@@ -1,29 +1,40 @@
 ﻿using BKCordServer.IdentityModule.Contracts;
+using BKCordServer.TextChannelModule.Data.Context.PostgreSQL;
 using BKCordServer.TextChannelModule.DTOs;
-using BKCordServer.TextChannelModule.Services;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Shared.Kernel.Exceptions;
 
 namespace BKCordServer.TextChannelModule.UseCases.TextMessage.SendTextMessage;
 public class SendTextMessageHandler : IRequestHandler<SendTextMessageCommand, TextMessageDTO>
 {
-    private readonly ITextMessageService _textMessageService;
-    private readonly ITextChannelService _textChannelService;
+    private readonly AppTextChannelDbContext _dbContext;
     private readonly IMediator _mediator;
 
-    public SendTextMessageHandler(ITextMessageService textMessageService, ITextChannelService textChannelService, IMediator mediator)
+    public SendTextMessageHandler(AppTextChannelDbContext dbContext, IMediator mediator)
     {
-        _textMessageService = textMessageService;
-        _textChannelService = textChannelService;
+        _dbContext = dbContext;
         _mediator = mediator;
     }
 
     public async Task<TextMessageDTO> Handle(SendTextMessageCommand request, CancellationToken cancellationToken)
     {
-        var textChannel = await _textChannelService.GetByIdAsync(request.TextChannelId);
+        var textChannel = await _dbContext.TextChannels.FirstOrDefaultAsync(tc => tc.Id == request.TextChannelId)
+            ?? throw new NotFoundException($"Text Channel cannot find with {request.TextChannelId} text channel id");
 
-        var textMessage = await _textMessageService.CreateAsync(request.UserId, request);
+        var textMessage = new Domain.Entities.TextMessage
+        {
+            SenderUserId = request.UserId,
+            ChannelId = request.TextChannelId,
+            Content = request.Content,
+        };
 
-        await _textChannelService.IncrementMessageCount(textChannel);
+        _dbContext.TextMessages.Add(textMessage);
+
+        textChannel.MessageCount++;
+        _dbContext.TextChannels.Update(textChannel);
+
+        await _dbContext.SaveChangesAsync();
 
         var userInf = await _mediator.Send(new GetUserInfQuery(request.UserId));
 

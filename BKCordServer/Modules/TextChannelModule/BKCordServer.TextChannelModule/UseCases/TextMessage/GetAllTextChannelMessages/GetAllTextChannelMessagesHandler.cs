@@ -1,23 +1,25 @@
 ﻿using BKCordServer.IdentityModule.Contracts;
 using BKCordServer.ServerModule.Contracts;
+using BKCordServer.TextChannelModule.Data.Context.PostgreSQL;
 using BKCordServer.TextChannelModule.DTOs;
-using BKCordServer.TextChannelModule.Services;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared.Kernel.Exceptions;
 using Shared.Kernel.Services;
 
 namespace BKCordServer.TextChannelModule.UseCases.TextMessage.GetAllTextChannelMessages;
 public class GetAllTextChannelMessagesHandler : IRequestHandler<GetAllTextChannelMessagesQuery, IEnumerable<TextMessageDTO>>
 {
-    private readonly ITextMessageService _textMessageService;
-    private readonly ITextChannelService _textChannelService;
+    private readonly AppTextChannelDbContext _dbContext;
     private readonly IHttpContextService _httpContextService;
     private readonly IMediator _mediator;
 
-    public GetAllTextChannelMessagesHandler(ITextMessageService textMessageService, ITextChannelService textChannelService, IHttpContextService httpContextService, IMediator mediator)
+    public GetAllTextChannelMessagesHandler(
+        AppTextChannelDbContext dbContext,
+        IHttpContextService httpContextService,
+        IMediator mediator)
     {
-        _textMessageService = textMessageService;
-        _textChannelService = textChannelService;
+        _dbContext = dbContext;
         _httpContextService = httpContextService;
         _mediator = mediator;
     }
@@ -26,14 +28,20 @@ public class GetAllTextChannelMessagesHandler : IRequestHandler<GetAllTextChanne
     {
         var userId = _httpContextService.GetUserId();
 
-        var textChannel = await _textChannelService.GetByIdAsync(request.TextChannelId);
+        var textChannel = await _dbContext.TextChannels.FirstOrDefaultAsync(tc => tc.Id == request.TextChannelId)
+            ?? throw new NotFoundException($"Text Channel cannot find with {request.TextChannelId} text channel id");
 
         var isUserMemberTheServer = await _mediator.Send(new IsUserMemberTheServerQuery(userId, textChannel.ServerId));
 
         if (!isUserMemberTheServer)
             throw new BadRequestException("User has not joined the server");
 
-        var textMessages = await _textMessageService.GetMessagesByChannelIdAsync(textChannel.Id, request.Before, request.PageSize);
+        var textMessagesQuery = _dbContext.TextMessages.Where(m => m.ChannelId == textChannel.Id);
+
+        if (request.Before.HasValue)
+            textMessagesQuery = textMessagesQuery.Where(m => m.CreatedAt < request.Before.Value);
+
+        var textMessages = await textMessagesQuery.OrderByDescending(m => m.CreatedAt).Take(request.PageSize).ToListAsync();
 
         var userIds = textMessages.Select(msg => msg.SenderUserId).Distinct().ToList();
 

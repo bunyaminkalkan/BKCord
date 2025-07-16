@@ -1,19 +1,20 @@
 ﻿using BKCordServer.ServerModule.Contracts;
-using BKCordServer.TextChannelModule.Services;
+using BKCordServer.TextChannelModule.Data.Context.PostgreSQL;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared.Kernel.Exceptions;
 using Shared.Kernel.Services;
 
 namespace BKCordServer.TextChannelModule.UseCases.TextChannel.GetAllTextChannels;
 public class GetAllTextChannelsHandler : IRequestHandler<GetAllTextChannelsQuery, IEnumerable<Domain.Entities.TextChannel>>
 {
-    private readonly ITextChannelService _textChannelService;
+    private readonly AppTextChannelDbContext _dbContext;
     private readonly IHttpContextService _httpContextService;
     private readonly IMediator _mediator;
 
-    public GetAllTextChannelsHandler(ITextChannelService textChannelService, IHttpContextService httpContextService, IMediator mediator)
+    public GetAllTextChannelsHandler(AppTextChannelDbContext dbContext, IHttpContextService httpContextService, IMediator mediator)
     {
-        _textChannelService = textChannelService;
+        _dbContext = dbContext;
         _httpContextService = httpContextService;
         _mediator = mediator;
     }
@@ -22,12 +23,11 @@ public class GetAllTextChannelsHandler : IRequestHandler<GetAllTextChannelsQuery
     {
         var userId = _httpContextService.GetUserId();
 
-        var query = new IsUserMemberTheServerQuery(userId, request.ServerId);
-        var isUserMemberTheServer = await _mediator.Send(query);
+        var isUserMemberTheServer = await _mediator.Send(new IsUserMemberTheServerQuery(userId, request.ServerId));
 
         if (!isUserMemberTheServer)
             throw new BadRequestException("User has not joined the server");
 
-        return await _textChannelService.GetAllByServerIdAsync(request.ServerId);
+        return await _dbContext.TextChannels.Where(tc => tc.ServerId == request.ServerId).ToListAsync();
     }
 }

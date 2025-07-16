@@ -1,6 +1,4 @@
 ﻿using BKCordServer.TextChannelModule.Data.Context.PostgreSQL;
-using BKCordServer.TextChannelModule.Repositories;
-using BKCordServer.TextChannelModule.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,14 +29,6 @@ public class TextChannelModule : IModule
         });
 
         services.AddValidatorsFromAssembly(typeof(TextChannelModule).Assembly);
-        #endregion
-
-        #region Interfaces
-        services.AddScoped<ITextChannelRepository, TextChannelRepository>();
-        services.AddScoped<ITextMessageRepository, TextMessageRepository>();
-
-        services.AddScoped<ITextMessageService, TextMessageService>();
-        services.AddScoped<ITextChannelService, TextChannelService>();
         #endregion
 
         services.AddSignalR();
