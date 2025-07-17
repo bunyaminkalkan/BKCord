@@ -16,6 +16,7 @@
 	<ProjectReference Include="..\..\Modules\IdentityModule\BKCordServer.IdentityModule\BKCordServer.IdentityModule.csproj" />
 	<ProjectReference Include="..\..\Modules\ServerModule\BKCordServer.ServerModule\BKCordServer.ServerModule.csproj" />
 	<ProjectReference Include="..\..\Modules\TextChannelModule\BKCordServer.TextChannelModule\BKCordServer.TextChannelModule.csproj" />
+	<ProjectReference Include="..\..\Modules\VoiceChannelModule\BKCordServer.VoiceChannelModule\BKCordServer.VoiceChannelModule.csproj" />
 	<ProjectReference Include="..\..\Shared\Shared.Kernel\Shared.Kernel.csproj" />
   </ItemGroup>
 

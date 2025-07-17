@@ -14,7 +14,8 @@ public static class InstallerExtensions
             [
             typeof(IdentityModule.IdentityModule).Assembly,
             typeof(ServerModule.ServerModule).Assembly,
-            typeof(TextChannelModule.TextChannelModule).Assembly
+            typeof(TextChannelModule.TextChannelModule).Assembly,
+            typeof(VoiceChannelModule.VoiceChannelModule).Assembly
             ];
 
     public static IServiceCollection InstallModules(this IServiceCollection services, IConfiguration configuration)
