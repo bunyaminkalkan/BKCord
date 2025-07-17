@@ -1,7 +1,8 @@
-﻿using BKCordServer.IdentityModule.DTOs;
-using BKCordServer.IdentityModule.Repositories;
+﻿using BKCordServer.IdentityModule.Data.Context.PostgreSQL;
+using BKCordServer.IdentityModule.DTOs;
 using BKCordServer.IdentityModule.Services;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared.Kernel.Exceptions;
 
 namespace BKCordServer.IdentityModule.UseCases.Auth.RefreshToken;
@@ -9,28 +10,27 @@ namespace BKCordServer.IdentityModule.UseCases.Auth.RefreshToken;
 public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, JwtResponse>
 {
     private readonly IJwtService _jwtService;
-    private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly AppIdentityDbContext _appIdentityDbContext;
 
-    public RefreshTokenHandler(IJwtService jwtService, IRefreshTokenRepository refreshTokenRepository)
+    public RefreshTokenHandler(IJwtService jwtService, AppIdentityDbContext appIdentityDbContext)
     {
         _jwtService = jwtService;
-        _refreshTokenRepository = refreshTokenRepository;
+        _appIdentityDbContext = appIdentityDbContext;
     }
 
     public async Task<JwtResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        var refreshToken = await _refreshTokenRepository.GetByRefreshTokenAsync(request.RefreshToken);
+        var refreshToken = await _appIdentityDbContext.RefreshTokens.FirstOrDefaultAsync(r => r.Token == request.RefreshToken)
+            ?? throw new BadRequestException("Enter a valid refresh token");
 
-        if (refreshToken == null)
-            throw new BadRequestException("Enter a valid refresh token");
+        var newTokens = await _jwtService.CreateTokenAsync(refreshToken.User);
 
-        var tokens = await _jwtService.CreateTokenAsync(refreshToken.User);
-
-        refreshToken.Token = tokens.RefreshToken;
+        refreshToken.Token = newTokens.RefreshToken;
         refreshToken.Expires = DateTime.UtcNow.AddMonths(1);
 
-        await _refreshTokenRepository.UpdateAsync(refreshToken);
+        _appIdentityDbContext.RefreshTokens.Update(refreshToken);
+        await _appIdentityDbContext.SaveChangesAsync();
 
-        return tokens;
+        return newTokens;
     }
 }

@@ -17,5 +17,10 @@ public sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<Refresh
         builder.HasIndex(r => r.Token).IsUnique();
 
         builder.HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId);
+
+        builder.Property(r => r.CreatedAt).IsRequired();
+        builder.Property(r => r.UpdatedAt).IsRequired(false);
+        builder.Property(r => r.IsDeleted).IsRequired();
+        builder.Property(r => r.DeletedAt).IsRequired(false);
     }
 }

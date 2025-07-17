@@ -1,20 +1,21 @@
 ﻿using BKCordServer.IdentityModule.Contracts;
-using BKCordServer.IdentityModule.Services;
+using BKCordServer.IdentityModule.Data.Context.PostgreSQL;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace BKCordServer.IdentityModule.Integrations;
 public sealed class ListUserInfsHandler : IRequestHandler<ListUserInfsQuery, IEnumerable<UserInfDTO>>
 {
-    private readonly IUserService _userService;
+    private readonly AppIdentityDbContext _appIdentityDbContext;
 
-    public ListUserInfsHandler(IUserService userService)
+    public ListUserInfsHandler(AppIdentityDbContext appIdentityDbContext)
     {
-        _userService = userService;
+        _appIdentityDbContext = appIdentityDbContext;
     }
 
     public async Task<IEnumerable<UserInfDTO>> Handle(ListUserInfsQuery request, CancellationToken cancellationToken)
     {
-        var users = await _userService.GetAllByIdsAsync(request.UserIds);
+        var users = await _appIdentityDbContext.Users.Where(u => request.UserIds.Contains(u.Id)).ToListAsync();
 
         return users.Select(u => new UserInfDTO(u.Id, u.UserName, u.AvatarUrl));
     }

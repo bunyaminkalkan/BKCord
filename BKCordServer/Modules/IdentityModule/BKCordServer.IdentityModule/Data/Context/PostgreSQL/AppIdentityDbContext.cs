@@ -1,7 +1,6 @@
 ﻿namespace BKCordServer.IdentityModule.Data.Context.PostgreSQL;
 
 using BKCordServer.IdentityModule.Constants;
-using BKCordServer.IdentityModule.Data.Configurations;
 using BKCordServer.IdentityModule.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -23,9 +22,11 @@ public class AppIdentityDbContext : IdentityUserContext<User, Guid>
         builder.Entity<IdentityUserLogin<Guid>>(e => { e.ToTable(name: "user_logins", schema: Tables.IdentitySchema); });
         builder.Entity<IdentityUserToken<Guid>>(e => { e.ToTable(name: "user_tokens", schema: Tables.IdentitySchema); });
 
+        builder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
+        builder.Entity<RefreshToken>().HasQueryFilter(r => !r.IsDeleted);
+
         // Konfigürasyonları uygula
-        builder.ApplyConfiguration(new UserConfiguration());
-        builder.ApplyConfiguration(new RefreshTokenConfiguration());
+        builder.ApplyConfigurationsFromAssembly(typeof(AppIdentityDbContext).Assembly);
     }
 }
 

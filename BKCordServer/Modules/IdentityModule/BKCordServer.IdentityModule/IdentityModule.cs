@@ -2,13 +2,13 @@
 using BKCordServer.IdentityModule.Data.Context.PostgreSQL;
 using BKCordServer.IdentityModule.Domain.Entities;
 using BKCordServer.IdentityModule.Options;
-using BKCordServer.IdentityModule.Repositories;
 using BKCordServer.IdentityModule.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Kernel.BuildingBlocks;
 using Shared.Kernel.DependencyInjection;
 using Shared.Kernel.Validations;
 
@@ -20,8 +20,11 @@ public class IdentityModule : IModule
     public void Install(IServiceCollection services, IConfiguration configuration)
     {
         #region DB
-        services.AddDbContext<AppIdentityDbContext>(options =>
-        options.UseNpgsql(configuration.GetConnectionString(SectionName)));
+        services.AddDbContext<AppIdentityDbContext>((sp, options) =>
+        {
+            options.UseNpgsql(configuration.GetConnectionString(SectionName));
+            options.AddInterceptors(sp.GetRequiredService<EntityAuditInterceptor>());
+        });
 
         //identity
         services.AddIdentityCore<User>()
@@ -49,10 +52,6 @@ public class IdentityModule : IModule
         #endregion
 
         #region Interfaces
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IJwtService, JwtService>();
         #endregion
 

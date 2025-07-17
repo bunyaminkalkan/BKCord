@@ -1,11 +1,13 @@
 ﻿using BKCordServer.IdentityModule.UseCases.User.GetByEmail;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BKCordServer.IdentityModule.Controllers;
 
 [ApiController]
-[Route("identity/user/")]
+[Route("[controller]/")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -15,10 +17,9 @@ public class UserController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("getByEmail/{email}")]
-    public async Task<IActionResult> GetByEmailAsync([FromRoute] string email)
+    [HttpGet("getByEmail/{Email}")]
+    public async Task<IActionResult> GetByEmailAsync([FromRoute] GetByEmailQuery request)
     {
-        var request = new GetByEmailQuery(email);
         var response = await _mediator.Send(request);
         return Ok(response);
     }
