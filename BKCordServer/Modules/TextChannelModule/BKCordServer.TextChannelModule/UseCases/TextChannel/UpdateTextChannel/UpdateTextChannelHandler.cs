@@ -28,8 +28,8 @@ public class UpdateTextChannelHandler : IRequestHandler<UpdateTextChannelCommand
 
         await _mediator.Send(new ValidateUserHavePermissionQuery(userId, textChannel.ServerId, RolePermission.ManageChannels));
 
+        textChannel.Name = request.Name;
         textChannel.UpdatedBy = userId;
-        textChannel.UpdatedAt = DateTime.UtcNow;
 
         _dbContext.TextChannels.Update(textChannel);
         await _dbContext.SaveChangesAsync();
