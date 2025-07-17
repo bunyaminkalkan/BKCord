@@ -21,6 +21,7 @@
 
   <ItemGroup>
   	  <ProjectReference Include="..\..\..\Shared\Shared.Kernel\Shared.Kernel.csproj" />
+  	  <ProjectReference Include="..\..\ServerModule\BKCordServer.ServerModule.Contracts\BKCordServer.ServerModule.Contracts.csproj" />
   </ItemGroup>
 	
 </Project>
