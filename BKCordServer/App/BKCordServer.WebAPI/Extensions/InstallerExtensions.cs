@@ -1,4 +1,5 @@
 ﻿using BKCordServer.TextChannelModule.SignalR;
+using BKCordServer.VoiceChannelModule.SignalR;
 using BKCordServer.WebAPI.Middlewares;
 using FluentValidation;
 using Shared.Kernel;
@@ -67,6 +68,7 @@ public static class InstallerExtensions
     public static WebApplication MapHubs(this WebApplication app)
     {
         app.MapHub<ChatHub>("/chatHub");
+        app.MapHub<VoiceHub>("/voiceHub");
 
         return app;
     }

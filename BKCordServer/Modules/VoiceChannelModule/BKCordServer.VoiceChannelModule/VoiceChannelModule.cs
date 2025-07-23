@@ -1,4 +1,5 @@
 ﻿using BKCordServer.VoiceChannelModule.Data.Context.PostgreSQL;
+using BKCordServer.VoiceChannelModule.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,7 +37,13 @@ public class VoiceChannelModule : IModule
         services.AddValidatorsFromAssembly(typeof(VoiceChannelModule).Assembly);
         #endregion
 
-        services.AddSignalR();
+        //services.AddHttpClient<IMediasoupService, MediasoupService>();
+        services.AddScoped<IMediasoupService, MediasoupService>();
+
+        services.AddSignalR(options =>
+        {
+            options.EnableDetailedErrors = true;
+        });
 
         Console.WriteLine("VoiceChannel module services registered");
     }
