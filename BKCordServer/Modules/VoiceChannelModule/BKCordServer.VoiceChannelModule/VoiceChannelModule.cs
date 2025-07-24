@@ -37,13 +37,10 @@ public class VoiceChannelModule : IModule
         services.AddValidatorsFromAssembly(typeof(VoiceChannelModule).Assembly);
         #endregion
 
-        //services.AddHttpClient<IMediasoupService, MediasoupService>();
+        services.AddHttpClient<IMediasoupService, MediasoupService>();
         services.AddScoped<IMediasoupService, MediasoupService>();
 
-        services.AddSignalR(options =>
-        {
-            options.EnableDetailedErrors = true;
-        });
+        services.AddSignalR();
 
         Console.WriteLine("VoiceChannel module services registered");
     }

@@ -1,4 +1,5 @@
 ﻿namespace BKCordServer.VoiceChannelModule.SignalR;
+
 public class JoinRoomResponse
 {
     public string RoomId { get; set; }
@@ -6,6 +7,7 @@ public class JoinRoomResponse
     public object RouterRtpCapabilities { get; set; }
     public bool Success { get; set; }
     public string Message { get; set; }
+    public List<string>? ProducerIds { get; set; }
 }
 
 public class TransportResponse
@@ -14,7 +16,6 @@ public class TransportResponse
     public object IceParameters { get; set; }
     public object IceCandidates { get; set; }
     public object DtlsParameters { get; set; }
-    public string Direction { get; set; } // "send" or "recv"
 }
 
 public class ProducerResponse
@@ -46,4 +47,9 @@ public class ConsumerResponse
     public object RtpParameters { get; set; }
     public string Type { get; set; }
     public bool Paused { get; set; }
+}
+
+public class RouterRtpCapabilitiesResponse
+{
+    public object Capabilities { get; set; }
 }

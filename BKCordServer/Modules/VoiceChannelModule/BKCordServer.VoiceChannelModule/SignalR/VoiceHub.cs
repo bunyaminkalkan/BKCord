@@ -1,8 +1,10 @@
 ﻿using BKCordServer.VoiceChannelModule.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BKCordServer.VoiceChannelModule.SignalR;
 
+[Authorize]
 public class VoiceHub : Hub
 {
     private readonly IMediasoupService _mediasoup;
