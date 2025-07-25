@@ -12,13 +12,13 @@ public class ForgotPasswordHandler : IRequestHandler<ForgotPasswordCommand, Mail
 {
     private readonly AppIdentityDbContext _dbContext;
     private readonly IMailService _mailService;
-    private readonly IPasswordResetTokenService _tokenService;
+    private readonly ITokenService _tokenService;
     private readonly IConfiguration _configuration;
 
     public ForgotPasswordHandler(
         AppIdentityDbContext dbContext,
         IMailService mailService,
-        IPasswordResetTokenService tokenService,
+        ITokenService tokenService,
         IConfiguration configuration)
     {
         _dbContext = dbContext;

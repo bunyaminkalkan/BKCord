@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Kernel.Exceptions;
 
-namespace BKCordServer.IdentityModule.UseCases.Auth.ResetPassword;
-public sealed class ResetPasswordHandler : IRequestHandler<ResetPasswordCommand>
+namespace BKCordServer.IdentityModule.UseCases.Auth.ConfirmEmail;
+public sealed class ConfirmEmailHandler : IRequestHandler<ConfirmEmailCommand>
 {
     private readonly AppIdentityDbContext _dbContext;
     private readonly UserManager<Domain.Entities.User> _userManager;
     private readonly ITokenService _tokenService;
 
-    public ResetPasswordHandler(
+    public ConfirmEmailHandler(
         AppIdentityDbContext dbContext,
         UserManager<Domain.Entities.User> userManager,
         ITokenService tokenService)
@@ -22,46 +22,48 @@ public sealed class ResetPasswordHandler : IRequestHandler<ResetPasswordCommand>
         _tokenService = tokenService;
     }
 
-    public async Task Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {
-        var tokenRecord = await _dbContext.ForgotPasswordTokens
+        // Token'ı veritabanından bul
+        var tokenRecord = await _dbContext.EmailConfirmationTokens
             .Include(t => t.User)
             .FirstOrDefaultAsync(t => t.Id == request.TokenId, cancellationToken)
-            ?? throw new NotFoundException("Invalid reset link.");
+            ?? throw new NotFoundException("Invalid confirmation link.");
 
+        // Token geçerlilik kontrolleri
         if (tokenRecord.IsUsed)
-            throw new BadRequestException("This reset link has already been used.");
+            throw new BadRequestException("This confirmation link has already been used.");
 
         if (tokenRecord.ExpiresAt < DateTime.UtcNow)
-            throw new BadRequestException("The reset link has expired.");
+            throw new BadRequestException("The confirmation link has expired.");
 
         // Token doğrulama
         if (!_tokenService.ValidateToken(request.Token, tokenRecord.Token))
-            throw new BadRequestException("Invalid reset link.");
+            throw new BadRequestException("Invalid confirmation link.");
 
         var user = tokenRecord.User;
 
-        // Aynı şifre kontrolü
-        var isSamePassword = await _userManager.CheckPasswordAsync(user, request.NewPassword);
-        if (isSamePassword)
-            throw new BadRequestException("The new password cannot be the same as the old one.");
+        // Email zaten onaylanmış mı?
+        if (user.EmailConfirmed)
+            throw new BadRequestException("This email address is already confirmed.");
 
-        // Şifreyi güncelle
-        await _userManager.RemovePasswordAsync(user);
-        var result = await _userManager.AddPasswordAsync(user, request.NewPassword);
+        // Email'i onayla
+        user.EmailConfirmed = true;
+        user.UpdatedAt = DateTime.UtcNow;
 
+        var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            throw new BadRequestException($"An error occurred while updating the password: {errors}");
+            throw new BadRequestException($"An error occurred while confirming the email: {errors}");
         }
 
         // Token'ı kullanılmış olarak işaretle
         tokenRecord.IsUsed = true;
         tokenRecord.UsedAt = DateTime.UtcNow;
 
-        // Kullanıcının diğer aktif tokenlarını da geçersiz kıl
-        var otherActiveTokens = await _dbContext.ForgotPasswordTokens
+        // Kullanıcının diğer aktif email confirmation tokenlarını da geçersiz kıl
+        var otherActiveTokens = await _dbContext.EmailConfirmationTokens
             .Where(t => t.UserId == user.Id && !t.IsUsed && t.Id != tokenRecord.Id)
             .ToListAsync(cancellationToken);
 

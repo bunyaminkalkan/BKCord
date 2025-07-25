@@ -1,7 +1,9 @@
-﻿using BKCordServer.IdentityModule.UseCases.Auth.ForgotPassword;
+﻿using BKCordServer.IdentityModule.UseCases.Auth.ConfirmEmail;
+using BKCordServer.IdentityModule.UseCases.Auth.ForgotPassword;
 using BKCordServer.IdentityModule.UseCases.Auth.Login;
 using BKCordServer.IdentityModule.UseCases.Auth.RefreshToken;
 using BKCordServer.IdentityModule.UseCases.Auth.Register;
+using BKCordServer.IdentityModule.UseCases.Auth.ResendEmailConfirmation;
 using BKCordServer.IdentityModule.UseCases.Auth.ResetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +26,21 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterCommand request)
     {
         await _mediator.Send(request);
-        return Ok();
+        return Ok(new { message = "Registration successful! Please confirm your email address." });
+    }
+
+    [HttpPost("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok(new { message = "Your email address has been successfully confirmed! You can now log in." });
+    }
+
+    [HttpPost("resend-email-confirmation")]
+    public async Task<IActionResult> ResendEmailConfirmation([FromBody] ResendEmailConfirmationCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok(new { message = "Confirmation email resent." });
     }
 
     [HttpPost("login")]

@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace BKCordServer.IdentityModule.Services;
-public class PasswordResetTokenService : IPasswordResetTokenService
+public class TokenService : ITokenService
 {
     public string GenerateToken()
     {

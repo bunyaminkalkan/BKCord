@@ -55,7 +55,7 @@ public class IdentityModule : IModule
         #region Interfaces
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IMailService, MailService>();
-        services.AddScoped<IPasswordResetTokenService, PasswordResetTokenService>();
+        services.AddScoped<ITokenService, TokenService>();
         #endregion
 
         #region Auth

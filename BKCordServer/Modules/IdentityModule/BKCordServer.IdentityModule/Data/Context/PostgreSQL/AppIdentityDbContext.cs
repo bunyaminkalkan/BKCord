@@ -13,6 +13,7 @@ public class AppIdentityDbContext : IdentityUserContext<User, Guid>
     //public virtual DbSet<User> Users { get; set; } zaten IdentityDbContext içinde var
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<ForgotPasswordToken> ForgotPasswordTokens { get; set; }
+    public DbSet<EmailConfirmationToken> EmailConfirmationTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

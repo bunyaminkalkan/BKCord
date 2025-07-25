@@ -1,5 +1,5 @@
 ﻿namespace BKCordServer.IdentityModule.Services;
-public interface IPasswordResetTokenService
+public interface ITokenService
 {
     string GenerateToken();
     string HashToken(string token);

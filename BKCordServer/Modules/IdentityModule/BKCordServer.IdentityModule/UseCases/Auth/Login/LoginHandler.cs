@@ -25,6 +25,9 @@ public class LoginHandler : IRequestHandler<LoginCommand, JwtResponse>
         var user = await _userManager.FindByEmailAsync(request.Email)
             ?? throw new BadRequestException("Invalid email or password");
 
+        if (!user.EmailConfirmed)
+            throw new BadRequestException("Your user email address is not verified. You must verify your email address to log in.");
+
         var isValidPassword = await _userManager.CheckPasswordAsync(user, request.Password);
 
         if (!isValidPassword)
