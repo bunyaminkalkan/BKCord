@@ -3,6 +3,7 @@ using BKCordServer.IdentityModule.UseCases.Auth.RefreshToken;
 using BKCordServer.IdentityModule.UseCases.Auth.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BKCordServer.IdentityModule.Controllers;
 
@@ -25,6 +26,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting("login")]
     public async Task<IActionResult> Login([FromBody] LoginCommand request)
     {
         var response = await _mediator.Send(request);

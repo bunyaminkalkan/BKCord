@@ -4,8 +4,10 @@ using BKCordServer.WebAPI.Middlewares;
 using FluentValidation;
 using Shared.Kernel;
 using Shared.Kernel.DependencyInjection;
+using Shared.Kernel.Exceptions;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 
 namespace BKCordServer.WebAPI.Extensions;
 
@@ -71,5 +73,47 @@ public static class InstallerExtensions
         app.MapHub<VoiceHub>("/voiceHub");
 
         return app;
+    }
+
+    public static IServiceCollection InstallRateLimiting(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+            RateLimitPartition.GetFixedWindowLimiter("global", _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                QueueLimit = 100,
+                Window = TimeSpan.FromSeconds(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+            }));
+
+            options.AddPolicy("login", httpContext =>
+            RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: key => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                QueueLimit = 2,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+            }));
+
+            options.OnRejected = async (context, token) =>
+            {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                context.HttpContext.Response.ContentType = "application/json";
+
+                var response = new ErrorResult
+                {
+                    Message = "Too many requests",
+                    StatusCode = StatusCodes.Status429TooManyRequests
+                };
+
+                await context.HttpContext.Response.WriteAsJsonAsync(response, cancellationToken: token);
+            };
+        });
+
+        return services;
     }
 }

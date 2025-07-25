@@ -54,6 +54,7 @@ builder.Services.AddOpenApi(options =>
 
 builder.Services.InstallSharedServices(builder.Configuration);
 builder.Services.InstallModules(builder.Configuration);
+builder.Services.InstallRateLimiting(builder.Configuration);
 builder.Services.AddCustomCors();
 
 var app = builder.Build();
@@ -71,6 +72,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+
+app.UseRateLimiter();
 
 app.UseExceptionMiddleware();
 
