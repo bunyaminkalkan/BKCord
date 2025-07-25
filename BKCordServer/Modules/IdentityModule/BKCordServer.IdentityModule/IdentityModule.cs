@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Shared.Kernel.BuildingBlocks;
 using Shared.Kernel.DependencyInjection;
 using Shared.Kernel.Validations;
@@ -53,16 +54,29 @@ public class IdentityModule : IModule
 
         #region Interfaces
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IMailService, MailService>();
+        services.AddScoped<IPasswordResetTokenService, PasswordResetTokenService>();
         #endregion
 
         #region Auth
         services.ConfigureOptions<JwtOptionsSetup>();
         services.ConfigureOptions<JwtBearerOptionsSetup>();
 
+        services.Configure<MailSettingOptions>(configuration.GetSection("MailSettings"));
+
         services.AddAuthentication()
             .AddJwtBearer();
 
         services.AddAuthorization();
+
+        using var scope = services.BuildServiceProvider().CreateScope();
+        var mailSettings = scope.ServiceProvider.GetRequiredService<IOptions<MailSettingOptions>>();
+
+        if (string.IsNullOrEmpty(mailSettings.Value.UserId))
+            services.AddFluentEmail(mailSettings.Value.Email).AddSmtpSender(mailSettings.Value.Smtp, mailSettings.Value.Port);
+
+        else
+            services.AddFluentEmail(mailSettings.Value.Email).AddSmtpSender(mailSettings.Value.Smtp, mailSettings.Value.Port, mailSettings.Value.UserId, mailSettings.Value.Password);
         #endregion
 
         Console.WriteLine("Identity module services registered");

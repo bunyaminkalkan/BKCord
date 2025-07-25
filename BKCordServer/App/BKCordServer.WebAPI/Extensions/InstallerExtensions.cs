@@ -99,6 +99,17 @@ public static class InstallerExtensions
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst
             }));
 
+            options.AddPolicy("forgot-password", httpContext =>
+            RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: key => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 2,
+                QueueLimit = 1,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+            }));
+
             options.OnRejected = async (context, token) =>
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;

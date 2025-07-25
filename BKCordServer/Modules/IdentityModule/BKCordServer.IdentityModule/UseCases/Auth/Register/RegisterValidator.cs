@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using BKCordServer.IdentityModule.UseCases.Auth.ValidationHelpers;
+using FluentValidation;
 
 namespace BKCordServer.IdentityModule.UseCases.Auth.Register;
 
@@ -42,35 +43,14 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .NotEmpty().WithMessage("Password is required.")
             .MinimumLength(6).WithMessage("Password must be at least 6 characters long.")
             .MaximumLength(100).WithMessage("Password cannot exceed 100 characters.")
-            .Must(ContainLowercase).WithMessage("Password must contain at least one lowercase letter.")
-            .Must(ContainUppercase).WithMessage("Password must contain at least one uppercase letter.")
-            .Must(ContainDigit).WithMessage("Password must contain at least one digit.")
-            .Must(ContainNonAlphanumeric).WithMessage("Password must contain at least one non-alphanumeric character.");
+            .Must(PasswordValidationHelper.ContainLowercase).WithMessage("Password must contain at least one lowercase letter.")
+            .Must(PasswordValidationHelper.ContainUppercase).WithMessage("Password must contain at least one uppercase letter.")
+            .Must(PasswordValidationHelper.ContainDigit).WithMessage("Password must contain at least one digit.")
+            .Must(PasswordValidationHelper.ContainNonAlphanumeric).WithMessage("Password must contain at least one non-alphanumeric character.");
 
         // ConfirmPassword - zorunlu ve Password ile eşleşmeli
         RuleFor(x => x.ConfirmPassword)
             .NotEmpty().WithMessage("Password confirmation is required.")
             .Equal(x => x.Password).WithMessage("Password and confirmation password do not match.");
-    }
-
-    // Password validation helper methods (Identity default requirements)
-    private static bool ContainLowercase(string password)
-    {
-        return password.Any(char.IsLower);
-    }
-
-    private static bool ContainUppercase(string password)
-    {
-        return password.Any(char.IsUpper);
-    }
-
-    private static bool ContainDigit(string password)
-    {
-        return password.Any(char.IsDigit);
-    }
-
-    private static bool ContainNonAlphanumeric(string password)
-    {
-        return password.Any(c => !char.IsLetterOrDigit(c));
     }
 }

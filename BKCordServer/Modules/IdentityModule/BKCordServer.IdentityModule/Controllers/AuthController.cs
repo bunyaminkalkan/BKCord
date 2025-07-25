@@ -1,6 +1,8 @@
-﻿using BKCordServer.IdentityModule.UseCases.Auth.Login;
+﻿using BKCordServer.IdentityModule.UseCases.Auth.ForgotPassword;
+using BKCordServer.IdentityModule.UseCases.Auth.Login;
 using BKCordServer.IdentityModule.UseCases.Auth.RefreshToken;
 using BKCordServer.IdentityModule.UseCases.Auth.Register;
+using BKCordServer.IdentityModule.UseCases.Auth.ResetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -31,6 +33,22 @@ public class AuthController : ControllerBase
     {
         var response = await _mediator.Send(request);
         return Ok(response);
+    }
+
+    [HttpPost("forgot-password")]
+    [EnableRateLimiting("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+    [HttpPost("reset-password")]
+    [EnableRateLimiting("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok(new { message = "Your password has been updated successfully." });
     }
 
     [HttpPost("refresh")]
