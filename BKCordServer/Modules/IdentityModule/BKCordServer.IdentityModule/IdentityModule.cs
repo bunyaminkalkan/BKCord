@@ -28,14 +28,25 @@ public class IdentityModule : IModule
         });
 
         //identity
-        services.AddIdentityCore<User>()
-            .AddEntityFrameworkStores<AppIdentityDbContext>();
+        services.AddIdentityCore<User>(options =>
+        {
+            options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+        })
+        .AddEntityFrameworkStores<AppIdentityDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddScoped<UserManager<User>>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<ILookupNormalizer, UpperInvariantLookupNormalizer>();
         services.AddScoped<IUserValidator<User>, UserValidator<User>>();
         services.AddScoped<IPasswordValidator<User>, PasswordValidator<User>>();
+
+        services.AddScoped<ITwoFactorAuthService, TwoFactorAuthService>();
+
+        services.Configure<DataProtectionTokenProviderOptions>(options =>
+        {
+            options.TokenLifespan = TimeSpan.FromMinutes(5);
+        });
         #endregion
 
         #region MediatR
@@ -59,6 +70,8 @@ public class IdentityModule : IModule
         #endregion
 
         #region Auth
+        services.AddHttpContextAccessor();
+
         services.ConfigureOptions<JwtOptionsSetup>();
         services.ConfigureOptions<JwtBearerOptionsSetup>();
 

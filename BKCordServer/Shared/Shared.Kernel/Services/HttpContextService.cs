@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using System.Security.Claims;
 
 namespace Shared.Kernel.Services;
 public sealed class HttpContextService : IHttpContextService
@@ -13,7 +14,7 @@ public sealed class HttpContextService : IHttpContextService
 
     public Guid GetUserId()
     {
-        return Guid.Parse(_httpContextAccessor.HttpContext?.User?.FindFirst("user_id")?.Value!);
+        return Guid.Parse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
     }
 
     public Guid GetIdFromRoute(string key)

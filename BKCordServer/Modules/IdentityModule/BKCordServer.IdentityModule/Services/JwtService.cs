@@ -25,7 +25,7 @@ public sealed class JwtService : IJwtService
 
         var claims = new Claim[]
         {
-            new Claim("user_id", user.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Exp, expires.ToString()),
             new Claim(JwtRegisteredClaimNames.Iss, _jwtOptions.Issuer),
@@ -48,6 +48,11 @@ public sealed class JwtService : IJwtService
 
         string refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
 
-        return new JwtResponse(token, refreshToken);
+        return new JwtResponse
+        {
+            AccessToken = token,
+            RefreshToken = refreshToken,
+            ExpirationDate = expires
+        };
     }
 }
