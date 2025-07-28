@@ -72,9 +72,9 @@ public class IdentityModule : IModule
         #region Auth
         services.AddHttpContextAccessor();
 
-        services.ConfigureOptions<JwtOptionsSetup>();
         services.ConfigureOptions<JwtBearerOptionsSetup>();
 
+        services.Configure<JwtOptions>(configuration.GetSection("JwtSettings"));
         services.Configure<MailSettingOptions>(configuration.GetSection("MailSettings"));
 
         services.AddAuthentication()
