@@ -1,6 +1,5 @@
 ﻿using BKCordServer.IdentityModule.Data.Context.PostgreSQL;
 using BKCordServer.IdentityModule.Domain.Entities;
-using BKCordServer.IdentityModule.DTOs;
 using BKCordServer.IdentityModule.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Shared.Kernel.Exceptions;
 
 namespace BKCordServer.IdentityModule.UseCases.Auth.ForgotPassword;
-public class ForgotPasswordHandler : IRequestHandler<ForgotPasswordCommand, MailResponse>
+public class ForgotPasswordHandler : IRequestHandler<ForgotPasswordCommand>
 {
     private readonly AppIdentityDbContext _dbContext;
     private readonly IMailService _mailService;
@@ -27,7 +26,7 @@ public class ForgotPasswordHandler : IRequestHandler<ForgotPasswordCommand, Mail
         _configuration = configuration;
     }
 
-    public async Task<MailResponse> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email)
             ?? throw new NotFoundException($"User not found with {request.Email} email address");
@@ -80,7 +79,5 @@ public class ForgotPasswordHandler : IRequestHandler<ForgotPasswordCommand, Mail
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         await _mailService.SendAsync(user.Email, subject, body);
-
-        return new MailResponse("Password reset email has been sent, please check your email address.");
     }
 }

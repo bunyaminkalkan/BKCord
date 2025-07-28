@@ -61,8 +61,8 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("forgot-password")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand request)
     {
-        var response = await _mediator.Send(request);
-        return Ok(response);
+        await _mediator.Send(request);
+        return Ok(new { message = "Password reset email has been sent, please check your email address." });
     }
 
     [HttpPost("reset-password")]
