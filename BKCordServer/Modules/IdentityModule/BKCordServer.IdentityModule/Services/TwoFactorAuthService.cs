@@ -46,15 +46,6 @@ public class TwoFactorAuthService : ITwoFactorAuthService
     public async Task<string[]> GenerateRecoveryCodesAsync(User user) =>
         (await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10)).ToArray();
 
-    public async Task<bool> VerifyTwoFactorTokenAsync(User user, string token)
-    {
-        // Setup sırasında token doğrulama
-        return await _userManager.VerifyTwoFactorTokenAsync(user, "Email", token);
-    }
-
-    public async Task<bool> VerifyLoginTokenAsync(User user, string token)
-    {
-        // Login sırasında token doğrulama
-        return await _userManager.VerifyTwoFactorTokenAsync(user, "Email", token);
-    }
+    public async Task<bool> VerifyLoginTokenAsync(User user, string token) =>
+        await _userManager.VerifyTwoFactorTokenAsync(user, "Email", token);
 }
