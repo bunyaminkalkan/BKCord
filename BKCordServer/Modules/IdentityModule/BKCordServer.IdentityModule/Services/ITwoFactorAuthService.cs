@@ -3,7 +3,7 @@
 namespace BKCordServer.IdentityModule.Services;
 public interface ITwoFactorAuthService
 {
-    Task<bool> SendTwoFactorCodeAsync(User user);
+    Task<string> SendTwoFactorCodeAsync(User user);
     Task<bool> EnableTwoFactorAsync(User user, string verificationCode);
     Task<bool> DisableTwoFactorAsync(User user);
     Task<string[]> GenerateRecoveryCodesAsync(User user);
