@@ -23,17 +23,22 @@ public class LeftServerHandler : IRequestHandler<LeftServerCommand>
     {
         var userId = _httpContextService.GetUserId();
 
-        await _serverAuthorizationService.ValidateUserMemberTheServerByUserIdAndServerId(userId, request.ServerId);
+        await _serverAuthorizationService
+            .ValidateUserMemberTheServerByUserIdAndServerId(userId, request.ServerId);
 
-        var serverMember = await _dbContext.ServerMembers.FirstOrDefaultAsync(sm => sm.UserId == userId && sm.ServerId == request.ServerId)
-            ?? throw new NotFoundException($"Server member connot be find {userId} user id and {request.ServerId} server id");
+        var serverMember = await _dbContext.ServerMembers
+            .FirstOrDefaultAsync(sm => sm.UserId == userId && sm.ServerId == request.ServerId, cancellationToken)
+            ?? throw new NotFoundException($"Server member cannot be found for user ID {userId} and server ID {request.ServerId}");
 
-        var serverMembersHistory = await _dbContext.ServerMembersHistory.FirstOrDefaultAsync(smh => smh.UserId == userId && smh.ServerId == request.ServerId)
-            ?? throw new NotFoundException($"History connot be find with {request.ServerId} server id and {userId} user id");
+        var serverMemberHistory = await _dbContext.ServerMembersHistory
+            .FirstOrDefaultAsync(smh => smh.UserId == userId && smh.ServerId == request.ServerId, cancellationToken)
+            ?? throw new NotFoundException($"History cannot be found for server ID {request.ServerId} and user ID {userId}");
+
+        serverMemberHistory.UpdatedAt = DateTime.UtcNow;
 
         _dbContext.ServerMembers.Remove(serverMember);
-        _dbContext.ServerMembersHistory.Remove(serverMembersHistory);
+        _dbContext.ServerMembersHistory.Update(serverMemberHistory);
 
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
