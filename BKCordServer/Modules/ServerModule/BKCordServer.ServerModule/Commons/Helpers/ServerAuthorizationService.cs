@@ -15,18 +15,32 @@ public class ServerAuthorizationService : IServerAuthorizationService
 
     public async Task ValidateUserHavePermissionByUserIdAndServerId(Guid userId, Guid serverId, RolePermission permission)
     {
-        var roleIds = await _dbContext.RoleMembers.Where(rm => rm.UserId == userId).Select(rm => rm.RoleId).ToListAsync();
+        var server = await _dbContext.Servers
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == serverId);
 
-        var roles = await _dbContext.Roles.Where(r => roleIds.Contains(r.Id)).ToListAsync();
+        if (server is null)
+            throw new NotFoundException("Server not found");
 
-        var isOwner = (await _dbContext.Servers.FirstOrDefaultAsync(s => s.Id == serverId))?.OwnerId == userId;
+        if (server.OwnerId == userId)
+            return;
 
-        var isHavePermission = roles
-            .Any(r => r.RolePermissions.Contains(permission) || r.RolePermissions.Contains(RolePermission.Administrator));
+        var hasPermission = await _dbContext.RoleMembers
+            .Where(rm => rm.UserId == userId)
+            .Join(_dbContext.Roles,
+                  rm => rm.RoleId,
+                  r => r.Id,
+                  (rm, r) => new { r.ServerId, r.RolePermissions })
+            .Where(x => x.ServerId == serverId)
+            .AnyAsync(x =>
+                x.RolePermissions.Contains(permission) ||
+                x.RolePermissions.Contains(RolePermission.Administrator));
 
-        if (!isHavePermission && !isOwner)
-            throw new ForbiddenException($"You don't have {permission.ToString()} permission");
+        if (!hasPermission)
+            throw new ForbiddenException($"You don't have {permission} permission on this server");
     }
+
+
 
     public async Task ValidateUserMemberTheServerByUserIdAndServerId(Guid userId, Guid serverId)
     {

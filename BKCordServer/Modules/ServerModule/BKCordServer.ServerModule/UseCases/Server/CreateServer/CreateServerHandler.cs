@@ -39,7 +39,7 @@ public class CreateServerHandler : IRequestHandler<CreateServerCommand, ServerIn
             ServerId = server.Id
         };
 
-        var serverMembersHistory = new ServerMembersHistory
+        var serverMembersHistory = new ServerMemberHistory
         {
             UserId = userId,
             ServerId = server.Id

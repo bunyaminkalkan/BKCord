@@ -30,7 +30,7 @@ public class JoinServerHandler : IRequestHandler<JoinServerCommand>
             ServerId = serverId
         };
 
-        var serverMembersHistory = new ServerMembersHistory
+        var serverMembersHistory = new ServerMemberHistory
         {
             UserId = userId,
             ServerId = serverId

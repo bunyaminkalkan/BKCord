@@ -1,6 +1,8 @@
-﻿using BKCordServer.ServerModule.UseCases.ServerMember.GetServersByMemberUser;
+﻿using BKCordServer.ServerModule.UseCases.ServerMember.BanUser;
+using BKCordServer.ServerModule.UseCases.ServerMember.GetServersByMemberUser;
 using BKCordServer.ServerModule.UseCases.ServerMember.GetServerUsers;
 using BKCordServer.ServerModule.UseCases.ServerMember.JoinServer;
+using BKCordServer.ServerModule.UseCases.ServerMember.KickUser;
 using BKCordServer.ServerModule.UseCases.ServerMember.LeftServer;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -47,5 +49,19 @@ public class ServerMemberController : ControllerBase
     {
         var response = await _mediator.Send(request);
         return Ok(response);
+    }
+
+    [HttpPost("ban-user")]
+    public async Task<IActionResult> BanUser([FromBody] BanUserCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok(new { message = "User was successfully banned from the server." });
+    }
+
+    [HttpPost("kick-user")]
+    public async Task<IActionResult> KickUser([FromBody] KickUserCommand request)
+    {
+        await _mediator.Send(request);
+        return Ok(new { message = "User was successfully kicked from the server." });
     }
 }

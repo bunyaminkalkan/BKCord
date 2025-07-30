@@ -11,7 +11,7 @@ public class AppServerDbContext : DbContext
 
     public DbSet<Server> Servers { get; set; }
     public DbSet<ServerMember> ServerMembers { get; set; }
-    public DbSet<ServerMembersHistory> ServerMembersHistory { get; set; }
+    public DbSet<ServerMemberHistory> ServerMembersHistory { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<RoleMember> RoleMembers { get; set; }
 
