@@ -3,7 +3,7 @@
 namespace BKCordServer.ServerModule.Domain.Entities;
 public class Server : IEntity
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public Guid OwnerId { get; set; }
     public string Name { get; set; }
     public string LogoUrl { get; set; }
